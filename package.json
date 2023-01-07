@@ -9,8 +9,10 @@
   },
   "dependencies": {
     "core-js": "^3.8.3",
+    "echarts": "^5.4.1",
     "node-sass": "^8.0.0",
     "vue": "^2.6.14",
+    "vue-echarts": "^4.1.0",
     "vuetify": "^2.6.0"
   },
   "devDependencies": {
