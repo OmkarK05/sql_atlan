@@ -10,7 +10,7 @@
       class="__query-content"
       sm="9"
     >
-      <SqlQueryInput />
+      <SqlQueryInput :queries="queries" />
     </v-col>
   </v-row>
 </template>
@@ -20,7 +20,32 @@ import SqlQueryInput from './SqlQueryInput.vue';
 
 export default {
     name: "QueryDB",
-    components: { SqlQueryInput, QuerySidebar }
+    components: { SqlQueryInput, QuerySidebar },
+    data: function(){
+      return {
+        queryDataMapping: {
+
+        },
+        queries: [
+          {
+            id: 1, 
+            query: 'SELECT COUNT(category.name) as count_of_categories FROM film_category LEFT JOIN film ON film_category.film_id = film.film_id LEFT JOIN category ON film_category.category_id = category.category_id WHERE film.release_year = 2018',
+            label: 'Get customers'
+          },
+          {
+            id: 2, 
+            query: 'SELECT COUNT(category.name) as count_of_categories FROM film_category LEFT JOIN film ON film_category.film_id = film.film_id LEFT JOIN category ON film_category.category_id = category.category_id WHERE film.release_year = 2018',
+            label: 'Get Orders'
+
+          },
+          {
+            id: 3, 
+            query: 'SELECT COUNT(category.name) as count_of_categories FROM film_category LEFT JOIN film ON film_category.film_id = film.film_id LEFT JOIN category ON film_category.category_id = category.category_id WHERE film.release_year = 2018',
+            label: 'Get Products'
+          },
+        ]
+      }
+    }
 }
 </script>
 <style lang="scss" scoped>
