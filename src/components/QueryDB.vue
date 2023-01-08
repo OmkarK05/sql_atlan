@@ -1,22 +1,28 @@
 <template>
-  <v-row class="query-db-container">
-    <v-col
-      sm="2"
+  <div class="query-db-container">
+    <div
       class="__query-db-sidebar"
     >
       <QuerySidebar />
-    </v-col>
-    <v-col
+    </div>
+    <div
       class="__query-content"
-      sm="10"
     >
       <SqlQueryInput
         :queries="queries"
+        class="__query-input"
         @run-query="loadQueryResult"
       />
-      <QueryResultCard :data="queryCardData" />
-    </v-col>
-  </v-row>
+      <template
+        v-if="queryCardData"
+      >
+        <QueryResultCard
+          :data="queryCardData"
+          class="__query-card"
+        />
+      </template>
+    </div>
+  </div>
 </template>
 <script>
 import QueryResultCard from './QueryResultCard.vue';
@@ -51,18 +57,8 @@ export default {
             dataName: 'products.json'
           },
         ],
-        queryCardData: {
-          uuid: '',
-          query: {},
-          data: {chart: null, table: null, json: ''},
-          filters: [{}],
-        },
-        savedQueries: [{
-          uuid: '',
-          query: '',
-          data: {chart: null, table: null, json: ''},
-          filters: [{}],
-        }],
+        queryCardData: null,
+        savedQueries: [null],
 
       }
     },
@@ -118,11 +114,18 @@ export default {
 </script>
 <style lang="scss" scoped>
 .query-db-container{
+  display: flex;
     .__query-content{
-        padding: 20px;
+      width: 84%;
+      padding: 20px;
+
+      .__query-card{
+        max-height: calc(100vh - 200px);
+      }
     }
     .__query-db-sidebar{
-        border-right: 1px solid #F6F6F6;
+      width: 16%;
+      border-right: 1px solid #F6F6F6;
     }
 }
 </style>

@@ -67,7 +67,7 @@
             </td>
           </tr>
         </tbody>
-      </table>)
+      </table>
     </div>
     <div
       v-if="tableData && tableData['pagination'] && false"
@@ -115,6 +115,10 @@ export default {
         table: {
             type: Object,
             default: null,
+        },
+        pagination: {
+          type: Boolean,
+          default: false
         }
     },
     data: function () {
@@ -142,6 +146,7 @@ export default {
         }
       },
       getPaginatedRows: function (rows, pageNumber) {
+          if(! this.pagination) return rows;
           return rows.slice((pageNumber - 1) * 7, pageNumber * 7);
       }
     }
@@ -199,7 +204,7 @@ export default {
           }
 
           .table-body-cell{
-              padding: 8px;
+              padding: 2px 8px;
               font-weight: normal;
           }
       }
@@ -208,7 +213,7 @@ export default {
 }
 
 .table-container{
-  height: 390px;
+  max-height: calc(100vh - 300px);
   overflow: auto;
 }
 
