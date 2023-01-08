@@ -6,7 +6,7 @@ import './assets/scss/global.scss'
 import 'echarts';
 
 Vue.config.productionTip = false;
-Vue.use(GlobalMixin);
+Vue.mixin(GlobalMixin);
 
 new Vue({
   vuetify,
