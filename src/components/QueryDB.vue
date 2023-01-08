@@ -11,7 +11,7 @@
       sm="9"
     >
       <SqlQueryInput :queries="queries" />
-      <AppEcharts :chart="chart" />
+      <AppEcharts />
     </v-col>
   </v-row>
 </template>

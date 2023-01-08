@@ -1,17 +1,14 @@
 <template lang="">
   <div>
-    <Echarts :options="option" />
+    <Chart :options="options" />
   </div>
 </template>
 <script>
-import 'echarts/lib/chart/line'
-import 'echarts/lib/component/tooltip'
-import ECharts from 'vue-echarts/components/ECharts'
-
+import Chart from 'vue-echarts'
 
 export default {
     name: "AppEcharts",
-    components: { ECharts },
+    components: { Chart },
     props: {
       chart: {
         type: Object,
