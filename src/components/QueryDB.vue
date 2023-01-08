@@ -11,16 +11,18 @@
       sm="9"
     >
       <SqlQueryInput :queries="queries" />
+      <AppEcharts :chart="chart" />
     </v-col>
   </v-row>
 </template>
 <script>
+import AppEcharts from './AppEcharts.vue';
 import QuerySidebar from './QuerySidebar.vue';
 import SqlQueryInput from './SqlQueryInput.vue';
 
 export default {
     name: "QueryDB",
-    components: { SqlQueryInput, QuerySidebar },
+    components: { SqlQueryInput, QuerySidebar, AppEcharts },
     data: function(){
       return {
         queryDataMapping: {
@@ -43,7 +45,7 @@ export default {
             query: 'SELECT COUNT(category.name) as count_of_categories FROM film_category LEFT JOIN film ON film_category.film_id = film.film_id LEFT JOIN category ON film_category.category_id = category.category_id WHERE film.release_year = 2018',
             label: 'Get Products'
           },
-        ]
+        ],
       }
     }
 }
