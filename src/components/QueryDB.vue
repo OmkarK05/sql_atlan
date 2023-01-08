@@ -55,8 +55,8 @@ export default {
             label: 'Get Orders',
             dataName: 'orders.json',
             columns: {
-              'dimensions': ['orderID', 'country', 'region', 'city'],
-              'measures': ['quantity', 'unitPrice', 'discount', 'freight']
+              'dimensions': ['country', 'region', 'city'],
+              'measures': ['quantity', 'unitPrice', 'discount', 'freight', 'orderID']
             }
           },
           {
@@ -72,7 +72,6 @@ export default {
         ],
         queryCardData: null,
         savedQueries: [null],
-
       }
     },
     computed: {
@@ -123,12 +122,73 @@ export default {
           uuid: this.getUUID()
         }
       },
-      getChartData: function (data) {
+      getChartData: function (data, columns) {
+        let chart = {
+          title: {
+            text: 'Stacked Line'
+          },
+          tooltip: {
+            trigger: 'axis'
+          },
+          legend: {
+            data: ['Email', 'Union Ads', 'Video Ads', 'Direct', 'Search Engine']
+          },
+          grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+          },
+          toolbox: {
+            feature: {
+              saveAsImage: {}
+            }
+          },
+          xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+          },
+          yAxis: {
+            type: 'value'
+          },
+          series: [
+            {
+              name: 'Email',
+              type: 'line',
+              stack: 'Total',
+              data: [120, 132, 101, 134, 90, 230, 210]
+            },
+          ]
+        };
 
+        let chartColumnMapping = {};
+
+        let chartColumns = Object.keys(data[0]).map((key, index) => { 
+            if( columns['measures'].includes(key) ){
+              return ({ name: key, type: 'line', stack: 'Total', data: [] })
+            } else if (columns['dimensions'].includes(key)) {
+              return ({ type: 'category', boundaryGap: false, data: [], name: key })
+            }
+          })
+
+        chartColumns.forEach((cell) => { if(cell) chartColumnMapping[cell['name']] = cell });
+        console.log(chartColumnMapping);
+        data.forEach((row) => {
+          Object.entries(row).forEach(([key, value]) => { 
+            if(chartColumnMapping[key]) chartColumnMapping[key]['data'].push(value)
+          });
+        })
+        chart['series'] = Object.values(chartColumnMapping).filter((__series) => columns['measures'].includes(__series['name']));
+        chart['xAxis'] = (Object.values(chartColumnMapping).filter((__series) => columns['dimensions'].includes(__series['name']))[0]) || [];
+        chart['uuid'] = this.getUUID();
+        return chart;
       },
 
       updateVisualization: function (columns) {
         this.queryCardData['data']['table'] = this.getTableData(this.queryCardData['data']['json'], columns);
+        this.queryCardData['data']['chart'] = this.getChartData(this.queryCardData['data']['json'], columns);
+        console.log(this.queryCardData['data']['chart']);
       }
     }
 }

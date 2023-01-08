@@ -38,7 +38,7 @@
       <AppTable :table="data['data']['table']" />
     </template>
     <template v-else>
-      <AppEcharts />
+      <AppEcharts :chart-data="data['data']['chart']" />
     </template>
   </div>
 </template>
@@ -71,7 +71,7 @@ export default {
             this.selectedMeasures = data['query']['columns']['measures']
           }
         }
-      }
+      },
     },
     methods: {
       columnsUpdated: function () {
