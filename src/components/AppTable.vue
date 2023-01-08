@@ -14,7 +14,7 @@
         >
           <tr>
             <th
-              v-for="(header) in tableData['headers']"
+              v-for="(header, index) in tableData['headers']"
               :key="`table-header-${header['label']}`"
               class="table-header-cell"
             >
@@ -26,22 +26,28 @@
                   id="app-table-sorting-icon"
                   class="table-column-sorting-icon"
                 >
-                  <!-- <img
+                  <SvgLoader
                     id="app-table-sort-ascending-icon"
-                    title="Sort Ascending"
-                    alt="Arrow up"
                     class="arrow-up"
-                    :src="arrowUp"
-                    @click="() => sortTable('ascending', index)"
+                    icon-name="Sort Ascending"
+                    color="#5F6F94"
+                    width="20"
+                    height="20"
+                    @click.native="sortTable('ascending', index)"
                   >
-                  <img
+                    <CaretUp />
+                  </SvgLoader>
+                  <SvgLoader
                     id="app-table-sort-descending-icon"
-                    title="Sort Descending"
-                    alt="Arrow Down"
                     class="arrow-down"
-                    :src="arrowDown"
-                    @click="() => sortTable('descending', index)"
-                  > -->
+                    icon-name="Sort Descending"
+                    color="#5F6F94"
+                    width="20"
+                    height="20"
+                    @click.native="sortTable('descending', index)"
+                  >
+                    <CaretDown />
+                  </SvgLoader>
                 </div>
               </div>
             </th>
@@ -54,13 +60,13 @@
           <tr
             v-for="(row, index) in paginatedRows"
             id="table-body-row"
-            :key="`table-body-row-${row['abbrevation']}-${index}`"
+            :key="`table-body-row-${index}`"
             class="table-body-row"
             onClick="() => handleRowClick(row)"
           >
             <td
-              v-for="cell in row['cells']"
-              :key="`table-body-cell-${row['id']}-${cell['value']}`"
+              v-for="(cell, cellIndex) in row['cells']"
+              :key="`table-body-cell-${cell['value']}-${cellIndex}`"
               class="table-body-cell bg-tertiary font-medium"
             >
               {{ cell["value"] }}
@@ -108,17 +114,23 @@
   </div>
 </template>
 <script>
+import arrowUp from '../assets/icons/caret-up-fill.svg';
+import arrowDown from '../assets/icons/caret-down-fill.svg'
+import SvgLoader from './helpers/SvgLoader.vue';
+import CaretUp from './svgs/CaretUp.vue'
+import CaretDown from './svgs/CaretDown.vue'
 
 export default {
-    name: 'AppTable',
+    name: "AppTable",
+    components: { SvgLoader, CaretDown, CaretUp },
     props: {
         table: {
             type: Object,
             default: null,
         },
         pagination: {
-          type: Boolean,
-          default: false
+            type: Boolean,
+            default: false
         }
     },
     data: function () {
@@ -126,29 +138,46 @@ export default {
             paginatedRows: null,
             tableData: null,
             currentPage: 1,
+            arrowUp: arrowUp,
+            arrowDown: arrowDown,
+        };
+    },
+    watch: {
+        table: function () {
+            this.setupTable();
         }
     },
-    watch : {
-      table: function () {
+    beforeMount() {
+        console.log(this.table);
         this.setupTable();
-      }
-    },
-    beforeMount () {
-      console.log(this.table)
-      this.setupTable();
     },
     methods: {
-      setupTable: function () {
-        console.log('setup', this.table);
-        this.tableData = this.deepCopy(this.table)
-        if(this.table && this.table.body) {
-          this.paginatedRows = this.getPaginatedRows(this.tableData['body'], this.currentPage);
+        setupTable: function () {
+            console.log("setup", this.table);
+            this.tableData = this.deepCopy(this.table);
+            if (this.table && this.table.body) {
+                this.paginatedRows = this.getPaginatedRows(this.tableData["body"], this.currentPage);
+            }
+        },
+        getPaginatedRows: function (rows, pageNumber) {
+            if (!this.pagination)
+                return rows;
+            return rows.slice((pageNumber - 1) * 7, pageNumber * 7);
+        },
+        sortTable : function (sortBy, headerIndex) {
+          console.log(sortBy, headerIndex)
+          const updateTable = this.deepCopy(this.table.body).sort((a, b) => {
+            if(typeof a["cells"][headerIndex]["value"] === 'number' && typeof b["cells"][headerIndex]["value"] === 'number'){
+              if(sortBy === "ascending") return a["cells"][headerIndex]["value"] - b["cells"][headerIndex]["value"];
+              if(sortBy === "descending") return b["cells"][headerIndex]["value"] - a["cells"][headerIndex]["value"];
+            } else {
+              if(sortBy === "ascending") return a["cells"][headerIndex]["value"].localeCompare(b["cells"][headerIndex]["value"]);
+              if(sortBy === "descending") return b["cells"][headerIndex]["value"].localeCompare(a["cells"][headerIndex]["value"]);
+            }
+          });
+          this.tableData['body'] = this.deepCopy(updateTable);
+          this.paginatedRows = this.getPaginatedRows(updateTable, this.currentPage);
         }
-      },
-      getPaginatedRows: function (rows, pageNumber) {
-          if(! this.pagination) return rows;
-          return rows.slice((pageNumber - 1) * 7, pageNumber * 7);
-      }
     }
 }
 </script>
