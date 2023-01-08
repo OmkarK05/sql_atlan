@@ -19,6 +19,7 @@
         <QueryResultCard
           :data="queryCardData"
           class="__query-card"
+          @columns-updated="updateVisualization"
         />
       </template>
     </div>
@@ -42,19 +43,31 @@ export default {
             id: 1, 
             query: 'SELECT COUNT(category.name) as count_of_categories FROM film_category LEFT JOIN film ON film_category.film_id = film.film_id LEFT JOIN category ON film_category.category_id = category.category_id WHERE film.release_year = 2018',
             label: 'Get customers',
-            dataName: 'customers.json'
+            dataName: 'customers.json',
+            columns: {
+              'dimensions': ['city', 'customerID', 'contactName', 'country'],
+              'measures': []
+            }
           },
           {
             id: 2, 
             query: 'SELECT COUNT(category.name) as count_of_categories FROM film_category LEFT JOIN film ON film_category.film_id = film.film_id LEFT JOIN category ON film_category.category_id = category.category_id WHERE film.release_year = 2018',
             label: 'Get Orders',
-            dataName: 'orders.json'
+            dataName: 'orders.json',
+            columns: {
+              'dimensions': ['orderID', 'country', 'region', 'city'],
+              'measures': ['quantity', 'unitPrice', 'discount', 'freight']
+            }
           },
           {
             id: 3, 
             query: 'SELECT COUNT(category.name) as count_of_categories FROM film_category LEFT JOIN film ON film_category.film_id = film.film_id LEFT JOIN category ON film_category.category_id = category.category_id WHERE film.release_year = 2018',
             label: 'Get Products',
-            dataName: 'products.json'
+            dataName: 'products.json',
+            columns: {
+              dimensions: ['productID', 'name'],
+              measures: ['unitsInStock', 'unitPrice']
+            }
           },
         ],
         queryCardData: null,
@@ -70,6 +83,9 @@ export default {
           return this.queries.find((query) => query['label'] === this.selectedQuery)['name'];
         }
     },
+    beforeMount() {
+      this.filterData();
+    },
     methods: {
       loadQueryResult: function (query) {
         let jsonData;
@@ -77,7 +93,7 @@ export default {
           jsonData = require(`./../assets/json/${query['dataName']}`);
         }catch (error){
           console.log(error);
-        } 
+        }
         this.getQueryCard(query, jsonData);     
       },
       getQueryCard: function (query, json) {
@@ -89,17 +105,18 @@ export default {
         }
 
         card['data']['json'] = json;
-        card['data']['chart'] = this.getChartData(json);
-        card['data']['table'] = this.getTableData(json);
+        card['data']['chart'] = this.getChartData(json, query['columns']);
+        card['data']['table'] = this.getTableData(json, query['columns']);
 
         this.queryCardData = this.deepCopy(card);
       },
-      getTableData: function (data) {
-        let headers = Object.keys(data[0]).map((key, index) => ({ name: key, 'label': key, index }))
+      getTableData: function (data, columns) {
+        let mergedColumns = [...columns['dimensions'], ...columns['measures']];
+        let headers = Object.keys(data[0]).map((key, index) => ({ name: key, 'label': key, index })).filter((cell) => mergedColumns.includes(cell['name']))
         let body = data.map((row) => ({
-          cells: Object.entries(data[0]).map(([key, value]) => ({ name: key, value: value, styles: {}}))
+          cells: Object.entries(row).map(([key, value]) => ({ name: key, value: value, styles: {}})).filter((cell) => mergedColumns.includes(cell['name']))
         }))
-
+ 
         return {
           headers,
           body,
@@ -109,6 +126,10 @@ export default {
       getChartData: function (data) {
 
       },
+
+      updateVisualization: function (columns) {
+        this.queryCardData['data']['table'] = this.getTableData(this.queryCardData['data']['json'], columns);
+      }
     }
 }
 </script>

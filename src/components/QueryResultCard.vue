@@ -1,14 +1,38 @@
 <template lang="">
   <div class="query-card">
     <div class="change-visualization-container">
-      <v-select
-        v-model="currentVisualization"
-        :items="visualizations"
-        label="Change Visualization"
-        dense
-        outlined
-        class="__select-visual"
-      />
+      <div class="__columns">
+        <v-select
+          v-model="selectedDimensions"
+          :items="data['query']['columns']['dimensions']"
+          label="Select Dimensions"
+          dense
+          outlined
+          multiple
+          class="__select-dimension"
+          @change="columnsUpdated"
+        />
+        <v-select
+          v-model="selectedMeasures"
+          :items="data['query']['columns']['measures']"
+          label="Select Measures"
+          dense
+          outlined
+          multiple
+          class="__select-measure"
+          @change="columnsUpdated"
+        />
+      </div>
+      <div>
+        <v-select
+          v-model="currentVisualization"
+          :items="visualizations"
+          label="Change Visualization"
+          dense
+          outlined
+          class="__select-visual"
+        />
+      </div>
     </div>
     <template v-if="currentVisualization === 'Table' && data && data['data']">
       <AppTable :table="data['data']['table']" />
@@ -33,7 +57,26 @@ export default {
     data: function () {
       return{
         currentVisualization: 'Table',
-        visualizations: ['Table', 'Chart']
+        visualizations: ['Table', 'Chart'],
+        selectedDimensions: [],
+        selectedMeasures: [],
+      }
+    },
+    watch: {
+      data: {
+        immediate: true,
+        handler: function(data) {
+          if( data['query'] ) {
+            this.selectedDimensions = data['query']['columns']['dimensions'];
+            this.selectedMeasures = data['query']['columns']['measures']
+          }
+        }
+      }
+    },
+    methods: {
+      columnsUpdated: function () {
+        console.log(this.selectedDimensions, this.selectedMeasures);
+        this.$emit('columns-updated', {dimensions: this.selectedDimensions, measures: this.selectedMeasures});
       }
     }
 }
@@ -50,10 +93,37 @@ export default {
 
     .change-visualization-container{
       width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
 
-      .__select-visual{
+      .__columns{
+        display: flex;
+      }
+
+      .__select-visual {
         width: 150px;
-        margin-left: auto;
+        margin: 0 8px;
+      }
+      .__select-dimension, .__select-measure{
+        width: 200px;
+        margin: 0 8px;
       }
     }
+</style>
+<style lang="scss">
+  .__columns{
+    .v-select__selections{
+      display: flex;
+      align-items: center;
+      flex-wrap: nowrap;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      .v-select__selection--comma{
+        overflow: visible;
+      }
+    }
+  }
 </style>
