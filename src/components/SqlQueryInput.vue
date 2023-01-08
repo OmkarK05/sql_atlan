@@ -44,10 +44,11 @@ export default {
     },
     methods: {
       runQuery: function () {
-        this.$emit('run-query', selectedQuery);
+        this.$emit('run-query', this.selectedQuery);
       },
       querySelected: function(query){
         this.query = query['query'];
+        this.selectedQuery = query;
       },
       showRecommendations: function() {
         console.log('show recommendation')

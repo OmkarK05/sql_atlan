@@ -1,29 +1,32 @@
 <template>
-  <div>
-    <div className="table-container">
+  <div
+    v-if="tableData"
+    class="app-table"
+  >
+    <div class="table-container">
       <table
         id="app-table"
-        className="app-table"
+        class="app-table"
       >
         <thead
           id="table-header"
-          className="table-header"
+          class="table-header"
         >
           <tr>
             <th
-              v-for="(header, index) in tableData"
+              v-for="(header) in tableData['headers']"
               :key="`table-header-${header['label']}`"
-              className="table-header-cell bg-primary text-white"
+              class="table-header-cell"
             >
-              <div className="d-flex align-items-center">
-                <p className="table-header-cell-title mb-0 font-medium">
-                  {header["label"]}
+              <div class="d-flex align-items-center">
+                <p class="table-header-cell-title mb-0 font-medium">
+                  {{ header["label"] }}
                 </p>
                 <div
                   id="app-table-sorting-icon"
-                  className="table-column-sorting-icon"
+                  class="table-column-sorting-icon"
                 >
-                  <img
+                  <!-- <img
                     id="app-table-sort-ascending-icon"
                     title="Sort Ascending"
                     alt="Arrow up"
@@ -35,10 +38,10 @@
                     id="app-table-sort-descending-icon"
                     title="Sort Descending"
                     alt="Arrow Down"
-                    className="arrow-down"
-                    src="{arrowDown}"
+                    class="arrow-down"
+                    :src="arrowDown"
                     @click="() => sortTable('descending', index)"
-                  >
+                  > -->
                 </div>
               </div>
             </th>
@@ -46,29 +49,29 @@
         </thead>
         <tbody
           id="table-body"
-          className="table-body"
+          class="table-body"
         >
           <tr
             v-for="(row, index) in paginatedRows"
             id="table-body-row"
             :key="`table-body-row-${row['abbrevation']}-${index}`"
-            className="table-body-row"
+            class="table-body-row"
             onClick="() => handleRowClick(row)"
           >
             <td
               v-for="cell in row['cells']"
               :key="`table-body-cell-${row['id']}-${cell['value']}`"
-              className="table-body-cell bg-tertiary font-medium"
+              class="table-body-cell bg-tertiary font-medium"
             >
-              { cell["value"] }
+              {{ cell["value"] }}
             </td>
           </tr>
         </tbody>
       </table>)
     </div>
     <div
-      v-if="tableData && tableData['pagination']"
-      className="mt-3 d-flex justify-content-end align-items-center"
+      v-if="tableData && tableData['pagination'] && false"
+      class="mt-3 d-flex justify-content-end align-items-center"
     >
       <Button
         id="app-table-pagination-previous-button"
@@ -78,15 +81,15 @@
         @click="() => handlePagination('prev')"
       >
         <img
-          className="arrow-left"
+          class="arrow-left"
           alt="Previous"
           src="{arrowLeft}"
         >
       </Button>
       <span id="app-table-pagination-text">
-        <span className="mx-2 text-bold">{currentPage}</span> 
-        <span className="mx-1">in</span> 
-        <span className="mx-2 text-bold">{table["pagination"]["total_pages"]}</span> 
+        <span class="mx-2 text-bold">{currentPage}</span> 
+        <span class="mx-1">in</span> 
+        <span class="mx-2 text-bold">{table["pagination"]["total_pages"]}</span> 
       </span>
       <Button
         id="app-table-pagination-next-button"
@@ -96,7 +99,7 @@
         @click="() => handlePagination('next')"
       >
         <img
-          className="arrow-right"
+          class="arrow-right"
           alt="Next"
           src="{arrowRight}"
         >
@@ -105,6 +108,7 @@
   </div>
 </template>
 <script>
+
 export default {
     name: 'AppTable',
     props: {
@@ -120,14 +124,99 @@ export default {
             currentPage: 1,
         }
     },
-    beforeMount: function() {
-        this.tableData = this.deepCopy(this.table)
+    watch : {
+      table: function () {
+        this.setupTable();
+      }
+    },
+    beforeMount () {
+      console.log(this.table)
+      this.setupTable();
     },
     methods: {
-
+      setupTable: function () {
+        console.log('setup', this.table);
+        this.tableData = this.deepCopy(this.table)
+        if(this.table && this.table.body) {
+          this.paginatedRows = this.getPaginatedRows(this.tableData['body'], this.currentPage);
+        }
+      },
+      getPaginatedRows: function (rows, pageNumber) {
+          return rows.slice((pageNumber - 1) * 7, pageNumber * 7);
+      }
     }
 }
 </script>
-<style lang="">
-    
+<style lang="scss" scoped>
+.app-table{
+  min-width: 100%;
+  margin: 0 auto;
+  table-layout: fixed;
+  border-collapse: collapse;
+
+  table, th, td {
+    border: 1px solid rgba(var(--secondary), 0.2);
+  }
+
+  .table-header{
+      .table-header-cell{
+          padding: 10px 8px;
+          font-weight: normal;
+          min-width: 150px;
+          background-color: rgba(var(--secondary), 0.2);
+      }
+
+      .table-header-cell-title {
+          width: calc(100% - 20px);
+      }
+
+      .table-column-sorting-icon{
+          width: 12px;
+          height: 24px;
+          display: flex;
+          flex-direction: column;
+
+          .arrow-up, .arrow-down{
+              height: 12px;
+              width: 12px;
+              cursor: pointer;
+
+              &:hover{
+                  opacity: 0.6;
+              }
+          }
+      }
+  }
+
+  .table-body{
+      .table-body-row{
+          cursor: pointer;
+
+          &:hover{
+              .table-body-cell{
+                  background-color: var(--secondary) !important;
+              }
+          }
+
+          .table-body-cell{
+              padding: 8px;
+              font-weight: normal;
+          }
+      }
+
+  }
+}
+
+.table-container{
+  height: 390px;
+  overflow: auto;
+}
+
+
+.arrow-right, .arrow-left{
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
 </style>

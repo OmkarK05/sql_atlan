@@ -1,6 +1,9 @@
 <template lang="">
   <div>
-    <Chart :options="options" />
+    <Chart
+      :options="options"
+      autoresize
+    />
   </div>
 </template>
 <script>
@@ -84,6 +87,9 @@ export default {
 
 }
 </script>
-<style lang="">
-    
+<style lang="scss" scoped>
+    .echarts {
+        width: 100%;
+        height: 400px
+    }
 </style>
