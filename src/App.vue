@@ -1,17 +1,17 @@
 <template>
   <v-app>
-    <QueryDB />
+    <AppQuery />
   </v-app>
 </template>
 
 <script>
-import QueryDB from './components/QueryDB.vue';
+import AppQuery from './components/AppQuery.vue';
 
 export default {
   name: 'App',
 
   components: {
-    QueryDB
+    AppQuery
 },
 
   data: () => ({
