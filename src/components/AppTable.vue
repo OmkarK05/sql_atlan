@@ -3,6 +3,16 @@
     v-if="tableData"
     class="app-table"
   >
+    <div class="__table-toolbar">
+      <SvgLoader 
+        width="20" 
+        height="20" 
+        icon-name="Download" 
+        @click.native="downloadTable"
+      >
+        <DownloadSvg />
+      </SvgLoader>
+    </div>
     <div class="table-container">
       <table
         id="app-table"
@@ -119,10 +129,11 @@ import arrowDown from '../assets/icons/caret-down-fill.svg'
 import SvgLoader from './helpers/SvgLoader.vue';
 import CaretUp from './svgs/CaretUp.vue'
 import CaretDown from './svgs/CaretDown.vue'
+import DownloadSvg from './svgs/DownloadSvg.vue';
 
 export default {
     name: "AppTable",
-    components: { SvgLoader, CaretDown, CaretUp },
+    components: { CaretDown, CaretUp, SvgLoader, DownloadSvg },
     props: {
         table: {
             type: Object,
@@ -177,6 +188,9 @@ export default {
           });
           this.tableData['body'] = this.deepCopy(updateTable);
           this.paginatedRows = this.getPaginatedRows(updateTable, this.currentPage);
+        },
+        downloadTable: function () {
+          this.$emit('download')
         }
     }
 }
@@ -187,6 +201,12 @@ export default {
   margin: 0 auto;
   table-layout: fixed;
   border-collapse: collapse;
+
+  .__table-toolbar{
+    display: flex;
+    justify-content: flex-end;
+    padding-bottom: 8px;
+  }
 
   table, th, td {
     border: 1px solid rgba(var(--secondary), 0.2);
@@ -242,7 +262,7 @@ export default {
 }
 
 .table-container{
-  max-height: calc(100vh - 350px);
+  max-height: calc(100vh - 400px);
   overflow: auto;
 }
 

@@ -1,4 +1,4 @@
-<template lang="">
+<template>
   <svg
     xmlns="http://www.w3.org/2000/svg"
     :width="width"
@@ -6,6 +6,7 @@
     viewBox="0 0 18 18"
     :aria-labelledby="iconName"
     role="presentation"
+    class="__svg"
   >
     <title
       :id="id"
@@ -43,6 +44,8 @@ export default {
     
 }
 </script>
-<style lang="">
-    
+<style lang="scss" scoped>
+    .__svg{
+      cursor: pointer;
+    }
 </style>
