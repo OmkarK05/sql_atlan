@@ -47,15 +47,21 @@
         @download="downloadTableData"
       />
     </template>
-    <template v-else>
+
+    <div v-show="currentVisualization['type'] === 'chart' && data && data['data']">
       <AppEcharts :chart-data="data['data']['chart']" />
-    </template>
+    </div>
   </div>
 </template>
 <script>
-import AppEcharts from "./helpers/AppEcharts.vue";
 import AppTable from "./helpers/AppTable.vue";
 import { parse } from 'json2csv'
+
+const AppEcharts = () => { 
+  return import('./helpers/AppEcharts.vue').then((response) => {
+    return Promise.resolve(response);
+  })
+};
 
 export default {
   name: "QueryResultCard",
@@ -96,6 +102,7 @@ export default {
      * This method emits "columns-updated" with columns {measures: [], dimensions: []} object
      */
     columnsUpdated: function () {
+      console.log(AppEcharts);
       this.$emit("columns-updated", this.currentVisualization, {
         dimensions: this.selectedDimensions,
         measures: this.selectedMeasures,
@@ -107,6 +114,8 @@ export default {
      * This method emits "visualization-changed" with changed visualization and columns {measures: [], dimensions: []} object
      */
     getVisualization: function () {
+      // window.localStorage.setItem('getting-chart')
+      console.log(AppEcharts);
       this.$emit("visualization-changed", this.currentVisualization, {
         dimensions: this.selectedDimensions,
         measures: this.selectedMeasures,

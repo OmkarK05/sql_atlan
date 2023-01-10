@@ -9,6 +9,7 @@
 </template>
 <script>
 import Chart from 'vue-echarts'
+import 'echarts';
 
 export default {
     name: "AppEcharts",
