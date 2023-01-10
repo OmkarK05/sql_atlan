@@ -70,7 +70,9 @@ Performance score after optimization is 99 with below metrics
     Was importing echarts charts library in main.js which was causing issue.
     Moved echart import to AppEcharts component and lazy loaded AppEcharts component
 
-2. Eliminate render-blocking resources
+2. Eliminated render-blocking resources
+    In index.html there were 2 render blocking stylesheet resources of font and icons.
+    Improved it by "preload"
 
 
 ## Getting Started
