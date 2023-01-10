@@ -9,6 +9,7 @@
     <div class="__query-content-container">
       <div class="__query-content">
         <SqlQueryInput
+          id="sql-query-input-text-area"
           :queries="queries"
           class="__query-input"
           @run-query="loadQueryResult"

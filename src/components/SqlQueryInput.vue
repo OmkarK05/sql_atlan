@@ -2,6 +2,7 @@
   <div class="sql-input-container">
     <div>
       <textarea
+        id="query-text-area-input"
         v-model="query"
         v-click-outside="hideRecommendations"
         class="__text-area"
