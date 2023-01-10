@@ -28,13 +28,18 @@
           v-model="currentVisualization"
           :items="visualizations"
           label="Change Visualization"
+          item-text="label"
+          item-value="name"
           dense
           outlined
+          return-object
+          single-line
           class="__select-visual"
+          @change="getVisualization"
         />
       </div>
     </div>
-    <template v-if="currentVisualization === 'Table' && data && data['data']">
+    <template v-if="currentVisualization['type'] === 'table' && data && data['data']">
       <AppTable :table="data['data']['table']" />
     </template>
     <template v-else>
@@ -56,8 +61,13 @@ export default {
     },
     data: function () {
       return{
-        currentVisualization: 'Table',
-        visualizations: ['Table', 'Chart'],
+        currentVisualization: { label: 'Table', name: 'table', type: 'table'},
+        visualizations: [
+          { label: 'Table', name: 'table', type: 'table'}, 
+          { label: 'Line Chart', name: 'line', type: 'chart' }, 
+          {label: 'Bar Chart', name: 'bar', type: 'chart'}, 
+          { label: 'Horizonal Bar Chart', name: 'horizontal-bar', type: 'chart'}
+        ],
         selectedDimensions: [],
         selectedMeasures: [],
       }
@@ -77,6 +87,10 @@ export default {
       columnsUpdated: function () {
         console.log(this.selectedDimensions, this.selectedMeasures);
         this.$emit('columns-updated', {dimensions: this.selectedDimensions, measures: this.selectedMeasures});
+      },
+      getVisualization: function () {
+        console.log(this.currentVisualization);
+        this.$emit('visualization-changed', this.currentVisualization);
       }
     }
 }
