@@ -57,17 +57,33 @@ export default {
         };
     },
     methods: {
+      /**
+       * Method is called to run query.
+       * Method emits event "run-query" with the selected query
+       */
       runQuery: function () {
         this.$emit('run-query', this.selectedQuery);
       },
+
+      /**
+       * Method is called when query is selected.
+       * @params {Object} query - query object
+       */
       querySelected: function(query){
         this.query = query['query'];
         this.selectedQuery = query;
       },
+
+      /**
+       * Methot to display query recommendations popup
+       */
       showRecommendations: function() {
-        console.log('show recommendation')
         this.showQueryRecommendations = true
       },
+
+      /**
+       * Methot to hide recommendations popup
+       */
       hideRecommendations: function () {
         this.showQueryRecommendations = false
       }
