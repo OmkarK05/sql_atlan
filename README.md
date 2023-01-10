@@ -96,7 +96,7 @@ Follow below steps to setup up project locally
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/OmkarK05/alkira-nba.git
+   git clone https://github.com/OmkarK05/sql_atlan.git
    ```
 2. Install NPM packages
    ```sh
@@ -104,7 +104,7 @@ Follow below steps to setup up project locally
    ```
 3. To start project
    ```sh
-   npm start
+   npm run serve
    ```
 4. To run unit tests
    ```sh
