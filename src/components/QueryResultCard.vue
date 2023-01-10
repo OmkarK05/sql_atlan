@@ -53,8 +53,8 @@
   </div>
 </template>
 <script>
-import AppEcharts from "./AppEcharts.vue";
-import AppTable from "./AppTable.vue";
+import AppEcharts from "./helpers/AppEcharts.vue";
+import AppTable from "./helpers/AppTable.vue";
 import { parse } from 'json2csv'
 
 export default {
