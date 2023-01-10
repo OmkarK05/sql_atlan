@@ -124,8 +124,6 @@
   </div>
 </template>
 <script>
-import arrowUp from "../../assets/icons/caret-up-fill.svg";
-import arrowDown from "../../assets/icons/caret-down-fill.svg";
 import SvgLoader from "./SvgLoader.vue";
 import CaretUp from "../svgs/CaretUp.vue";
 import CaretDown from "../svgs/CaretDown.vue";
@@ -149,8 +147,6 @@ export default {
       paginatedRows: null,
       tableData: null,
       currentPage: 1,
-      arrowUp: arrowUp,
-      arrowDown: arrowDown,
     };
   },
   watch: {

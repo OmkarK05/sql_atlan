@@ -2,6 +2,7 @@
   <div class="recommendations-container">
     <div
       v-for="recommendation in recommendations"
+      :id="`recommendation-${recommendation['id']}`"
       :key="recommendation['id']"
     >
       <div

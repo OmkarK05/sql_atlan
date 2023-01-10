@@ -3,8 +3,9 @@
     <div class="change-visualization-container">
       <div class="__columns">
         <v-select
+          id="query-card-measures-select-input"
           v-model="selectedDimensions"
-          :items="data['query']['columns']['dimensions']"
+          :items="card['query']['columns']['dimensions']"
           label="Select Dimensions"
           dense
           outlined
@@ -13,8 +14,9 @@
           @change="columnsUpdated"
         />
         <v-select
+          id="query-card-dimensions-select-input"
           v-model="selectedMeasures"
-          :items="data['query']['columns']['measures']"
+          :items="card['query']['columns']['measures']"
           label="Select Measures"
           dense
           outlined
@@ -25,6 +27,7 @@
       </div>
       <div>
         <v-select
+          id="query-card-visualization-select-input"
           v-model="activeVisualization"
           :items="visualizations"
           label="Change Visualization"
@@ -40,34 +43,32 @@
       </div>
     </div>
     <template
-      v-if="activeVisualization['type'] === 'table' && data && data['data']"
+      v-if="activeVisualization['type'] === 'table' && card && card['data']"
     >
       <AppTable
-        :table="data['data']['table']"
+        :table="card['data']['table']"
         @download="downloadTableData"
       />
     </template>
 
-    <div v-show="activeVisualization['type'] === 'chart' && data && data['data']">
-      <AppEcharts :chart-data="data['data']['chart']" />
+    <div v-show="activeVisualization['type'] === 'chart' && card && card['data']">
+      <AppEcharts :chart-data="card['data']['chart']" />
     </div>
   </div>
 </template>
 <script>
-import AppTable from "./helpers/AppTable.vue";
+import AppTable from "../helpers/AppTable.vue";
 import { parse } from 'json2csv'
 
 const AppEcharts = () => { 
-  return import('./helpers/AppEcharts.vue').then((response) => {
-    return Promise.resolve(response);
-  })
+  return import('../helpers/AppEcharts.vue')
 };
 
 export default {
   name: "QueryResultCard",
   components: { AppEcharts, AppTable },
   props: {
-    data: {
+    card: {
       type: Object,
       default: null,
     },
@@ -90,7 +91,7 @@ export default {
     };
   },
   watch: {
-    data: {
+    card: {
       immediate: true,
       handler: function (data) {
         if (data["query"]) {
@@ -140,7 +141,7 @@ export default {
      */
     downloadTableData: function () {
       let fields = [...this.selectedDimensions, ...this.selectedMeasures];
-      const csv = parse(this.data['data']['json'], { fields });
+      const csv = parse(this.card['data']['json'], { fields });
 
       const blob = new Blob([csv], { type: 'text/csv' });
  

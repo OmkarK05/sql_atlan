@@ -16,7 +16,7 @@
         />
         <template v-if="queryCardData">
           <QueryResultCard
-            :data="queryCardData"
+            :card="queryCardData"
             :visualization="activeVisualization"
             class="__query-card"
             @columns-updated="updateVisualization"
@@ -28,9 +28,9 @@
   </div>
 </template>
 <script>
-import QueryResultCard from "./QueryResultCard.vue";
+import QueryResultCard from "./query-card/QueryResultCard.vue";
 import QuerySidebar from "./QuerySidebar.vue";
-import SqlQueryInput from "./SqlQueryInput.vue";
+import SqlQueryInput from "./query-input/SqlQueryInput.vue";
 import DashboardSvg from "./svgs/DashboardSvg.vue";
 import SearchSvg from "./svgs/SearchSvg.vue";
 import { ChartMixin } from "@/mixins/chart/chartMixin";

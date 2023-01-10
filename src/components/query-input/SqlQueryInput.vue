@@ -11,10 +11,12 @@
       />
       <SqlQueryRecommendations
         v-show="showQueryRecommendations"
+        id="query-input-options-container"
         :recommendations="queries"
         @select="querySelected"
       />
       <v-btn
+        id="query-input-run-query-button"
         color="primary"
         class="mt-2"
         @click="runQuery"
@@ -36,9 +38,9 @@
   </div>
 </template>
 <script>
-import SvgLoader from './helpers/SvgLoader.vue';
-import SqlQueryRecommendations from './SqlQueryRecommendations.vue';
-import PlaySvg from './svgs/PlaySvg.vue';
+import SvgLoader from '../helpers/SvgLoader.vue';
+import SqlQueryRecommendations from '../SqlQueryRecommendations.vue';
+import PlaySvg from '../svgs/PlaySvg.vue';
 
 
 export default {
