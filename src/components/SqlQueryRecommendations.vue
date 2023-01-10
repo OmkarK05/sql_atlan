@@ -26,7 +26,6 @@ export default {
     },
     methods: {
         selectQuery: function (query) {
-            console.log('select');
             this.$emit('select', query)
         }
     }

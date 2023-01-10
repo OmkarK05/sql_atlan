@@ -145,7 +145,6 @@ export default {
 
       card["data"]["json"] = this.selectedData;
 
-      console.log(this.activeVisualization);
       if ( this.activeVisualization['type'] === 'chart' ){
         card["data"]["chart"] = this.getChartData(this.activeVisualization['name'], query["columns"]);
       } else {
