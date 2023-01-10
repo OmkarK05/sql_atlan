@@ -41,7 +41,8 @@ Create, design and implement a web-based application capable of running SQL quer
 3. The Result of the query will be shown below.
 4. Measures and Dimensions can be toggled to enable/disable them in result.
 5. 4 different visualizations are available table, line-chart, bar-chart and horizontal bar chart.
-6. Chart and Table both can be downloaded
+6. Table can be sorted in ascending and descending order by clicking on up and down icons respectively.
+7. Chart and Table both can be downloaded
 
 ### Built With
 
