@@ -123,20 +123,37 @@ export default {
       )["name"];
     },
   },
-  beforeMount() {
-    this.filterData();
-  },
   methods: {
-    loadQueryResult: function (query) {
+    /**
+     * Method to get json data for selected query
+     * @param {Object} query - selected query
+     */
+    loadQueryResult: function (query = null) {
+      this.getData(query['dataName']).then((response) => {
+        this.selectedData = response;
+        this.getQueryCard(query);
+      });
+    },
+
+    /**
+     * Getting json data using require from /assets/json/
+     * @param {String} dataName - data file name
+     */
+    getData: async function (dataName) {
       try {
-        this.selectedData = require(`./../assets/json/${query["dataName"]}`);
+        const data = await require(`./../assets/json/${dataName}`);
+        Promise.resolve(data);
       } catch (error) {
         console.log(error);
+        Promise.reject(error);
       }
-      this.getQueryCard(query);
     },
-    getQueryCard: function (query, json) {
-      console.log(query);
+
+    /**
+     * Method to get query result standard card object
+     * @param {Object} query - selected query
+     */
+    getQueryCard: function (query) {
       let card = {
         uuid: this.getUUID(),
         query: this.deepCopy(query),
@@ -150,11 +167,19 @@ export default {
 
       this.queryCardData = this.deepCopy(card);
     },
+
+    /**
+     * This method converts data into table object and returns table object
+     * @param {Array} data - json data
+     * @param {Object} columns - columns object containing dimensions and measures {dimensions: [], measures: []}
+     */
     getTableData: function (data, columns) {
       let mergedColumns = [...columns["dimensions"], ...columns["measures"]];
+      
       let headers = Object.keys(data[0])
         .map((key, index) => ({ name: key, label: key, index }))
         .filter((cell) => mergedColumns.includes(cell["name"]));
+      
       let body = data.map((row) => ({
         cells: Object.entries(row)
           .map(([key, value]) => ({ name: key, value: value, styles: {} }))
@@ -167,102 +192,31 @@ export default {
         uuid: this.getUUID(),
       };
     },
-    getChartData: function (data, chartType = "line", columns) {
-      let chart = {
-        title: {
-          text: "Stacked Line",
-        },
-        tooltip: {
-          trigger: "axis",
-          axisPointer: {
-            type: "shadow",
-          },
-        },
-        legend: {
-          data: ["Email", "Union Ads", "Video Ads", "Direct", "Search Engine"],
-        },
-        grid: {
-          left: "3%",
-          right: "4%",
-          bottom: "3%",
-          containLabel: true,
-        },
-        toolbox: {
-          feature: {
-            saveAsImage: {},
-          },
-        },
-        xAxis: {
-          type: "category",
-          boundaryGap: false,
-          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-        },
-        yAxis: {
-          type: "value",
-        },
-        series: [
-          {
-            name: "Email",
-            type: "line",
-            stack: "Total",
-            data: [120, 132, 101, 134, 90, 230, 210],
-          },
-        ],
-      };
 
-      let chartColumnMapping = {};
-
-      let chartColumns = Object.keys(data[0]).map((key, index) => {
-        if (columns["measures"].includes(key)) {
-          return {
-            name: key,
-            type: chartType,
-            stack: "total",
-            data: [],
-            label: {
-              show: true,
-            },
-            emphasis: {
-              focus: "series",
-            },
-          };
-        } else if (columns["dimensions"].includes(key)) {
-          return { type: "category", boundaryGap: false, data: [], name: key };
-        }
-      });
-
-      chartColumns.forEach((cell) => {
-        if (cell) chartColumnMapping[cell["name"]] = cell;
-      });
-      console.log(chartColumnMapping);
-      data.forEach((row) => {
-        Object.entries(row).forEach(([key, value]) => {
-          if (chartColumnMapping[key])
-            chartColumnMapping[key]["data"].push(value);
-        });
-      });
-      let series = Object.values(chartColumnMapping).filter((__series) =>
-        columns["measures"].includes(__series["name"])
-      );
-      let metricAxis =
-        Object.values(chartColumnMapping).filter((__series) =>
-          columns["dimensions"].includes(__series["name"])
-        )[0] || [];
-      chart["series"] = series;
-      chart["xAxis"] = metricAxis;
-      chart["uuid"] = this.getUUID();
-      return chart;
-    },
-
+    /**
+     * Method is used to update chart and table when dimensions / measures are changed from card
+     * @param {Object} visualization - visualization object { label: "Table", name: "table", type: "table" }
+     * @param {Object} columns - columns object containing dimensions and measures {dimensions: [], measures: []}
+     */
     updateVisualization: function (visualization, columns) {
       this.queryCardData["data"]["table"] = this.getTableData(this.selectedData, columns);
       this.queryCardData["data"]["chart"] = this.getViualization(visualization['name'], columns);
     },
 
+    /**
+     * Method is called when visualization is changed
+     * @param {Object} visualization - visualization object { label: "Table", name: "table", type: "table" }
+     * @param {Object} columns - columns object containing dimensions and measures {dimensions: [], measures: []}
+     */
     changeVisualization: function (visualization, columns) {
       this.queryCardData["data"]["chart"] = this.getViualization(visualization['name'], columns);
     },
 
+    /**
+     * Method to get chart visualization bar/line/horizontal-bar chart
+     * @param {String} chartType - bar, line, horizontal-bar
+     * @param {Object} columns - columns object containing dimensions and measures {dimensions: [], measures: []}
+     */
     getViualization: function (chartType, columns) {
       const visualizationMapping = {
         'bar': this.getBarChart,

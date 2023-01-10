@@ -20,12 +20,8 @@ export default {
       }
     },
     data: function () {
-      return {
-      }
+      return {}
     },
-    methods: {
-    }
-
 }
 </script>
 <style lang="scss" scoped>
