@@ -45,10 +45,10 @@ Create, design and implement a web-based application capable of running SQL quer
 
 ### Built With
 
-- Vue.js 2.6 https://reactjs.org/docs/getting-started.html
-- Vuetify https://react-bootstrap.github.io/
+- Vue.js 2.6 https://v2.vuejs.org/
+- Vuetify https://vuetifyjs.com/en/
 - Cypress https://docs.cypress.io/guides/overview/why-cypress
-- Echarts https://docs.cypress.io/guides/overview/why-cypress
+- Echarts https://echarts.apache.org/en/index.html
 
 <!-- GETTING STARTED -->
 
@@ -56,7 +56,13 @@ Create, design and implement a web-based application capable of running SQL quer
 Measured performance and load time of application using Lighthouse.
 
 #### Before
-Before performance score was 76 and very high FCP and LCP
+Before optimizing performance score was 72 
+1. First Contentful Paint - 0.6s
+2. Time to Interactive - 3.1s
+3. Largest Contentful Paint - 3.1s
+4. Cumulative Layout Shift - 0s
+5. Total Blocking Time - 170ms
+6. Speed Index - 2.1s
 
 #### After
 Performance score after optimization is 99 with below metrics
@@ -64,6 +70,8 @@ Performance score after optimization is 99 with below metrics
 2. Time to Interactive - 0.7s
 3. Largest Contentful Paint - 1.0s
 4. Cumulative Layout Shift - 0s
+5. Total Blocking Time - 50ms
+6. Speed Index - 1.2s
 
 #### Optimization Details
 1. Lazy-loading:
