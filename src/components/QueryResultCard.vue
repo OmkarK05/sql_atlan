@@ -55,7 +55,8 @@
 <script>
 import AppEcharts from "./AppEcharts.vue";
 import AppTable from "./AppTable.vue";
-import { parse } from "json2csv";
+import { parse } from 'json2csv'
+
 export default {
   name: "QueryResultCard",
   components: { AppEcharts, AppTable },
@@ -90,42 +91,53 @@ export default {
     },
   },
   methods: {
+    /**
+     * Method is called when dimension / measure columns are changed.
+     * This method emits "columns-updated" with columns {measures: [], dimensions: []} object
+     */
     columnsUpdated: function () {
       this.$emit("columns-updated", this.currentVisualization, {
         dimensions: this.selectedDimensions,
         measures: this.selectedMeasures,
       });
     },
-
+    
+    /**
+     * Method is called when visualization is changed.
+     * This method emits "visualization-changed" with changed visualization and columns {measures: [], dimensions: []} object
+     */
     getVisualization: function () {
-      console.log(this.currentVisualization);
       this.$emit("visualization-changed", this.currentVisualization, {
         dimensions: this.selectedDimensions,
         measures: this.selectedMeasures,
       });
     },
+
+    /**
+     * Method is called to download csv file of table data
+     */
     downloadTableData: function () {
       let fields = [...this.selectedDimensions, ...this.selectedMeasures];
-      const csv = parse(this.data["data"]["json"], { fields });
-      
-      const blob = new Blob([csv], { type: "text/csv" });
+      const csv = parse(this.data['data']['json'], { fields });
 
+      const blob = new Blob([csv], { type: 'text/csv' });
+ 
       // Creating an object for downloading url
-      const url = window.URL.createObjectURL(blob);
+      const url = window.URL.createObjectURL(blob)
 
       // Creating an anchor(a) tag of HTML
-      const a = document.createElement("a");
+      const a = document.createElement('a')
 
       // Passing the blob downloading url
-      a.setAttribute("href", url);
+      a.setAttribute('href', url)
 
       // Setting the anchor tag attribute for downloading
       // and passing the download file name
-      a.setAttribute("download", "download.csv");
+      a.setAttribute('download', 'download.csv');
 
       // Performing a download with click
-      a.click();
-    },
+      a.click()
+    }
   },
 };
 </script>
