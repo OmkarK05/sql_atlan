@@ -242,7 +242,7 @@ export default {
 }
 
 .table-container{
-  max-height: calc(100vh - 300px);
+  max-height: calc(100vh - 350px);
   overflow: auto;
 }
 
