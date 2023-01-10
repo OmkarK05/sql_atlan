@@ -7,8 +7,9 @@
       <div
         v-for="tab in tabs"
         :key="tab['name']"
+        :title="tab['disabled'] ? 'Comming Soon..': tab['label']"
         class="__tab"
-        :class="tab['active'] ? 'active' : ''"
+        :class="tab['disabled'] ? 'disabled' : ( tab['active'] ? 'active' : '' )"
         @click="switchTab(tab)"
       >
         <SvgLoader
@@ -46,6 +47,8 @@ export default {
      * @param {Object} tab
      */
     switchTab: function (tab) {
+      if(tab['disabled']) return;
+
       this.$emit("switch-tab", tab);
     },
   },
@@ -75,6 +78,11 @@ export default {
 
     &:hover {
       background-color: rgba(var(--secondary), 0.2);
+    }
+
+    
+    &.disabled{
+      background-color: #ffffff !important;
     }
   }
 }

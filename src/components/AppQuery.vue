@@ -49,6 +49,7 @@ export default {
           label: "Dashboard",
           icon: DashboardSvg,
           active: false,
+          disabled: true
         },
       ],
       queries: [
