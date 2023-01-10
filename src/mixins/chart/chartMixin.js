@@ -1,5 +1,12 @@
 export const ChartMixin = {
   methods: {
+    /**
+     * Method to get horizontal bar chart
+     * @param {Object} chart - base chart object
+     * @param {Array} data - data objects
+     * @param {Object} columns - columns object containing dimensions and measures {dimensions: [], measures: []}
+     * @returns
+     */
     getHorizontalBarChart: function (chart = null, data, columns) {
       let chartData = chart ? chart : this.getAxisBaseChart();
       chartData["series"] = this.getSeriesData(data, columns, "bar");
@@ -11,6 +18,13 @@ export const ChartMixin = {
       return chartData;
     },
 
+    /**
+     * Method to get bar chart, it builds and returns bar chart from base chart
+     * @param {Object} chart
+     * @param {Array} data
+     * @param {Object} columns
+     * @returns
+     */
     getBarChart: function (chart = null, data, columns) {
       let chartData = chart ? chart : this.getAxisBaseChart();
       chartData["series"] = this.getSeriesData(data, columns, "bar");
@@ -22,6 +36,13 @@ export const ChartMixin = {
       return chartData;
     },
 
+    /**
+     * Method to get line chart, it builds and returns line chart from base chart
+     * @param {Object} chart
+     * @param {Array} data
+     * @param {Object} columns
+     * @returns
+     */
     getLineChart: function (chart = null, data, columns) {
       let chartData = chart ? chart : this.getAxisBaseChart();
       chartData["series"] = this.getSeriesData(data, columns, "line");
@@ -33,10 +54,14 @@ export const ChartMixin = {
       return chartData;
     },
 
+    /**
+     * Method to get base axis chart line/bar
+     * @returns - base axis chart
+     */
     getAxisBaseChart: function () {
       return {
         title: {
-          text: "Stacked Line",
+          text: "",
         },
         tooltip: {
           trigger: "axis",
@@ -64,9 +89,15 @@ export const ChartMixin = {
       };
     },
 
+    /**
+     * Method to get chart series array from columns
+     * @param {*} data
+     * @param {*} columns
+     * @param {String} chartType - type of chart 'line' or 'bar'
+     * @returns
+     */
     getSeriesData: function (data, columns, chartType) {
       let seriesDataMapping = {};
-      console.log(data, columns, chartType);
       // Populating seriesDataMapping with key as measure name and value as series object
       columns["measures"].forEach((measure) => {
         seriesDataMapping[measure] = {
@@ -94,6 +125,12 @@ export const ChartMixin = {
       return [...Object.values(seriesDataMapping)];
     },
 
+    /**
+     * Method to get chart dimension axis data
+     * @param {*} data
+     * @param {*} columns
+     * @returns
+     */
     getAxisData: function (data, columns) {
       let dimensionAxis = {
         type: "category",
