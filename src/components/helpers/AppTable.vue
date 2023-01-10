@@ -124,12 +124,12 @@
   </div>
 </template>
 <script>
-import arrowUp from "../assets/icons/caret-up-fill.svg";
-import arrowDown from "../assets/icons/caret-down-fill.svg";
-import SvgLoader from "./helpers/SvgLoader.vue";
-import CaretUp from "./svgs/CaretUp.vue";
-import CaretDown from "./svgs/CaretDown.vue";
-import DownloadSvg from "./svgs/DownloadSvg.vue";
+import arrowUp from "../../assets/icons/caret-up-fill.svg";
+import arrowDown from "../../assets/icons/caret-down-fill.svg";
+import SvgLoader from "./SvgLoader.vue";
+import CaretUp from "../svgs/CaretUp.vue";
+import CaretDown from "../svgs/CaretDown.vue";
+import DownloadSvg from "../svgs/DownloadSvg.vue";
 
 export default {
   name: "AppTable",
@@ -167,7 +167,7 @@ export default {
      */
     setupTable: function () {
       this.tableData = this.deepCopy(this.table);
-      if (this.pagination && this.table && this.table.body) {
+      if (this.table && this.table.body) {
         this.paginatedRows = this.getPaginatedRows(
           this.tableData["body"],
           this.currentPage
