@@ -7,9 +7,6 @@
       />
     </div>
     <div class="__query-content-container">
-      <div class="__navbar">
-        Navbar
-      </div>
       <div class="__query-content">
         <SqlQueryInput
           :queries="queries"
@@ -19,6 +16,7 @@
         <template v-if="queryCardData">
           <QueryResultCard
             :data="queryCardData"
+            :visualization="activeVisualization"
             class="__query-card"
             @columns-updated="updateVisualization"
             @visualization-changed="changeVisualization"
@@ -37,7 +35,7 @@ import SearchSvg from "./svgs/SearchSvg.vue";
 import { ChartMixin } from "@/mixins/chart/chartMixin";
 
 export default {
-  name: "QueryDB",
+  name: "AppQuery",
   components: { SqlQueryInput, QueryResultCard, QuerySidebar },
   mixins: [ChartMixin],
   data: function () {
@@ -61,15 +59,11 @@ export default {
             dimensions: ["city", "customerID", "contactName", "country"],
             measures: [],
           },
-          selectedColumns: {
-            dimensions: ["city", "customerID", "contactName", "country"],
-            measures: [],
-          }
         },
         {
           id: 2,
           query:
-            "SELECT country, region, city, quantity, unitPrice  FROM customers",
+            "SELECT country, region, city, quantity, unitPrice  FROM orders",
           label: "Get Orders",
           dataName: "orders.json",
           columns: {
@@ -82,35 +76,21 @@ export default {
               "orderID",
             ],
           },
-          selectedColumns: {
-            dimensions: ["country", "region", "city"],
-            measures: [
-              "quantity",
-              "unitPrice",
-              "discount",
-              "freight",
-              "orderID",
-            ],
-          }
         },
         {
           id: 3,
-          query: "SELECT name, unitsInStock, unitPrice FROM customers",
+          query: "SELECT name, unitsInStock, unitPrice FROM products",
           label: "Get Products",
           dataName: "products.json",
           columns: {
             dimensions: ["productID", "name"],
             measures: ["unitsInStock", "unitPrice"],
           },
-          selectedColumns: {
-            dimensions: ["productID", "name"],
-            measures: ["unitsInStock", "unitPrice"],
-          }
         },
       ],
       queryCardData: null,
-      savedQueries: [null],
       selectedData: null,
+      activeVisualization: { label: "Table", name: "table", type: "table" },
     };
   },
   computed: {
@@ -160,8 +140,12 @@ export default {
       };
 
       card["data"]["json"] = this.selectedData;
-      card["data"]["chart"] = this.getViualization("bar", query["columns"]);
-      card["data"]["table"] = this.getTableData(this.selectedData, query["columns"]);
+
+      if ( this.activeVisualization['type'] === 'chart' ){
+        card["data"]["chart"] = this.getViualization(this.activeVisualization['name'], query["columns"]);
+      } else {
+        card["data"]["table"] = this.getTableData(this.selectedData, query["columns"]);
+      }
 
       this.queryCardData = this.deepCopy(card);
     },
@@ -207,6 +191,8 @@ export default {
      * @param {Object} columns - columns object containing dimensions and measures {dimensions: [], measures: []}
      */
     changeVisualization: function (visualization, columns) {
+      console.log(visualization);
+      this.activeVisualization = this.visualization;
       this.queryCardData["data"]["chart"] = this.getViualization(visualization['name'], columns);
     },
 

@@ -25,7 +25,7 @@
       </div>
       <div>
         <v-select
-          v-model="currentVisualization"
+          v-model="activeVisualization"
           :items="visualizations"
           label="Change Visualization"
           item-text="label"
@@ -35,12 +35,12 @@
           return-object
           single-line
           class="__select-visual"
-          @change="getVisualization"
+          @change="updateVisualization"
         />
       </div>
     </div>
     <template
-      v-if="currentVisualization['type'] === 'table' && data && data['data']"
+      v-if="activeVisualization['type'] === 'table' && data && data['data']"
     >
       <AppTable
         :table="data['data']['table']"
@@ -48,7 +48,7 @@
       />
     </template>
 
-    <div v-show="currentVisualization['type'] === 'chart' && data && data['data']">
+    <div v-show="activeVisualization['type'] === 'chart' && data && data['data']">
       <AppEcharts :chart-data="data['data']['chart']" />
     </div>
   </div>
@@ -71,10 +71,13 @@ export default {
       type: Object,
       default: null,
     },
+    visualization: {
+      type: Object,
+      default: () => {}
+    },
   },
   data: function () {
     return {
-      currentVisualization: { label: "Table", name: "table", type: "table" },
       visualizations: [
         { label: "Table", name: "table", type: "table" },
         { label: "Line Chart", name: "line", type: "chart" },
@@ -83,6 +86,7 @@ export default {
       ],
       selectedDimensions: [],
       selectedMeasures: [],
+      activeVisualization: {},
     };
   },
   watch: {
@@ -95,6 +99,16 @@ export default {
         }
       },
     },
+    visualization: {
+      immediate: true,
+      deep: true,
+      handler: function () {
+        this.activeVisualization = this.deepCopy(this.visualization);
+      }
+    }
+  },
+  beforeMount() {
+    this.activeVisualization = this.deepCopy(this.visualization);
   },
   methods: {
     /**
@@ -102,8 +116,7 @@ export default {
      * This method emits "columns-updated" with columns {measures: [], dimensions: []} object
      */
     columnsUpdated: function () {
-      console.log(AppEcharts);
-      this.$emit("columns-updated", this.currentVisualization, {
+      this.$emit("columns-updated", this.activeVisualization, {
         dimensions: this.selectedDimensions,
         measures: this.selectedMeasures,
       });
@@ -113,10 +126,10 @@ export default {
      * Method is called when visualization is changed.
      * This method emits "visualization-changed" with changed visualization and columns {measures: [], dimensions: []} object
      */
-    getVisualization: function () {
+     updateVisualization: function () {
       // window.localStorage.setItem('getting-chart')
       console.log(AppEcharts);
-      this.$emit("visualization-changed", this.currentVisualization, {
+      this.$emit("visualization-changed", this.activeVisualization, {
         dimensions: this.selectedDimensions,
         measures: this.selectedMeasures,
       });
