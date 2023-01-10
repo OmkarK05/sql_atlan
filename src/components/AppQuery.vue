@@ -129,24 +129,23 @@ export default {
      * @param {Object} query - selected query
      */
     loadQueryResult: function (query = null) {
-      this.getData(query['dataName']).then((response) => {
-        this.selectedData = response;
-        this.getQueryCard(query);
-      });
+      this.selectedData = this.getData(query['dataName']);
+      this.getQueryCard(query);
     },
 
     /**
      * Getting json data using require from /assets/json/
      * @param {String} dataName - data file name
      */
-    getData: async function (dataName) {
+    getData: function (dataName) {
+      let data;
       try {
-        const data = await require(`./../assets/json/${dataName}`);
-        Promise.resolve(data);
+        data = require(`./../assets/json/${dataName}`);
       } catch (error) {
         console.log(error);
-        Promise.reject(error);
       }
+      console.log(data);
+      return data;
     },
 
     /**
@@ -175,7 +174,7 @@ export default {
      */
     getTableData: function (data, columns) {
       let mergedColumns = [...columns["dimensions"], ...columns["measures"]];
-      
+
       let headers = Object.keys(data[0])
         .map((key, index) => ({ name: key, label: key, index }))
         .filter((cell) => mergedColumns.includes(cell["name"]));
