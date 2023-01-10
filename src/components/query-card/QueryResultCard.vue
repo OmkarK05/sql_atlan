@@ -1,5 +1,9 @@
 <template lang="">
   <div class="query-card">
+    <AppLoader
+      v-if="showLoading"
+      message="Building Visualization"
+    />
     <div class="change-visualization-container">
       <div class="__columns">
         <v-select
@@ -59,14 +63,13 @@
 <script>
 import AppTable from "../helpers/AppTable.vue";
 import { parse } from 'json2csv'
+import AppLoader from "../helpers/AppLoader.vue";
 
-const AppEcharts = () => { 
-  return import('../helpers/AppEcharts.vue')
-};
+const AppEcharts = () => import('../helpers/AppEcharts.vue');
 
 export default {
   name: "QueryResultCard",
-  components: { AppEcharts, AppTable },
+  components: { AppEcharts, AppTable, AppLoader },
   props: {
     card: {
       type: Object,
@@ -76,6 +79,10 @@ export default {
       type: Object,
       default: () => {}
     },
+    showLoading: {
+      type: Boolean,
+      default: false
+    }
   },
   data: function () {
     return {
@@ -88,6 +95,7 @@ export default {
       selectedDimensions: [],
       selectedMeasures: [],
       activeVisualization: {},
+      showLoader: [],
     };
   },
   watch: {
@@ -128,8 +136,6 @@ export default {
      * This method emits "visualization-changed" with changed visualization and columns {measures: [], dimensions: []} object
      */
      updateVisualization: function () {
-      // window.localStorage.setItem('getting-chart')
-      console.log(AppEcharts);
       this.$emit("visualization-changed", this.activeVisualization, {
         dimensions: this.selectedDimensions,
         measures: this.selectedMeasures,
@@ -173,6 +179,7 @@ export default {
     0px 8px 10px 1px rgb(0 0 0 / 14%), 0px 3px 14px 2px rgb(0 0 0 / 12%);
   background: #ffffff;
   margin: 20px 0;
+  position: relative;
 }
 
 .change-visualization-container {

@@ -18,9 +18,10 @@
           <QueryResultCard
             :card="queryCardData"
             :visualization="activeVisualization"
+            :show-loading="showCardLoader.length"
             class="__query-card"
             @columns-updated="updateVisualization"
-            @visualization-changed="changeVisualization"
+            @visualization-changed="updateVisualization"
           />
         </template>
       </div>
@@ -92,6 +93,7 @@ export default {
       queryCardData: null,
       selectedData: null,
       activeVisualization: { label: "Table", name: "table", type: "table" },
+      showCardLoader: []
     };
   },
   computed: {
@@ -110,6 +112,7 @@ export default {
      * @param {Object} query - selected query
      */
     loadQueryResult: function (query = null) {
+      this.queryCardData = null;
       this.selectedData = this.getData(query['dataName']);
       this.getQueryCard(query);
     },
@@ -142,8 +145,9 @@ export default {
 
       card["data"]["json"] = this.selectedData;
 
+      console.log(this.activeVisualization);
       if ( this.activeVisualization['type'] === 'chart' ){
-        card["data"]["chart"] = this.getViualization(this.activeVisualization['name'], query["columns"]);
+        card["data"]["chart"] = this.getChartData(this.activeVisualization['name'], query["columns"]);
       } else {
         card["data"]["table"] = this.getTableData(this.selectedData, query["columns"]);
       }
@@ -177,24 +181,19 @@ export default {
     },
 
     /**
-     * Method is used to update chart and table when dimensions / measures are changed from card
-     * @param {Object} visualization - visualization object { label: "Table", name: "table", type: "table" }
-     * @param {Object} columns - columns object containing dimensions and measures {dimensions: [], measures: []}
-     */
-    updateVisualization: function (visualization, columns) {
-      this.queryCardData["data"]["table"] = this.getTableData(this.selectedData, columns);
-      this.queryCardData["data"]["chart"] = this.getViualization(visualization['name'], columns);
-    },
-
-    /**
      * Method is called when visualization is changed
      * @param {Object} visualization - visualization object { label: "Table", name: "table", type: "table" }
      * @param {Object} columns - columns object containing dimensions and measures {dimensions: [], measures: []}
      */
-    changeVisualization: function (visualization, columns) {
-      console.log(visualization);
-      this.activeVisualization = this.visualization;
-      this.queryCardData["data"]["chart"] = this.getViualization(visualization['name'], columns);
+    updateVisualization: function (visualization, columns) {
+      this.showCardLoader.push(true);
+      this.activeVisualization = this.deepCopy(visualization);
+      if( visualization['type'] === 'chart' ){
+        this.queryCardData["data"]["chart"] = this.getChartData(visualization['name'], columns);
+      } else {
+        this.queryCardData["data"]["table"] = this.getTableData(this.selectedData, columns);
+      }
+      setTimeout(() => this.showCardLoader.pop(), 1000)
     },
 
     /**
@@ -202,11 +201,11 @@ export default {
      * @param {String} chartType - bar, line, horizontal-bar
      * @param {Object} columns - columns object containing dimensions and measures {dimensions: [], measures: []}
      */
-    getViualization: function (chartType, columns) {
+    getChartData: function (chartType, columns) {
       const visualizationMapping = {
         'bar': this.getBarChart,
         'line': this.getLineChart,
-        'horizontal-bar': this.getHorizontalBarChart
+        'horizontal-bar': this.getHorizontalBarChart,
       }
 
       if(visualizationMapping[chartType]) {
@@ -244,9 +243,11 @@ export default {
       width: 100%;
       padding: 20px;
       height: 100%;
+      overflow-y: scroll;
+      overflow-x: hidden;
 
       .__query-card {
-        max-height: calc(100vh - 260px);
+        max-height: 100%;
       }
     }
   }
