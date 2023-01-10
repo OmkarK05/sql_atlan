@@ -74,11 +74,11 @@ Performance score after optimization is 99 with below metrics
 6. Speed Index - 1.2s
 
 #### Optimization Details
-1. Lazy-loading:
+1. Lazy-loading :
     Was importing echarts charts library in main.js which was causing issue.
     Moved echart import to AppEcharts component and lazy loaded AppEcharts component
 
-2. Eliminated render-blocking resources
+2. Eliminated render-blocking resources :
     In index.html there were 2 render blocking stylesheet resources of font and icons.
     Improved it by "preload"
 
