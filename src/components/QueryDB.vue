@@ -258,18 +258,18 @@ export default {
  .__query-content-container{
     width: 84%;
     position: relative;
-    height: calc(100vh - 40px);
+    height: 100vh;
+    background-color: rgba(var(--background), 1);
 
     .__navbar{
       width: 100%;
       height: 40px;
       border-bottom: 1px solid #F6F6F6;
-
+      padding: 0 20px;
     }
     .__query-content{
       width: 100%;
       padding: 20px;
-      background-color: rgba(var(--background), 1);
       height: 100%;
 
       .__query-card{
