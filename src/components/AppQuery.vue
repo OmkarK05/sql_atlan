@@ -2,7 +2,8 @@
   <div class="query-db-container">
     <div class="__query-db-sidebar">
       <QuerySidebar
-        :tabs="tabs"
+        :queries="query"
+        :data-sets="dataSets"
         @switch-tab="switchTab"
       />
     </div>
@@ -52,6 +53,27 @@ export default {
           disabled: true
         },
       ],
+      query: {
+        '10': {
+          queries: [
+            {
+              "query": "SELECT * FROM orders Where country='USA'",
+              "id": 1,
+              'title': 'Orders from USA'
+            },
+            {
+              "query": "SELECT * FROM orders Where quantity > 50",
+              "id": 2,
+              'title': 'Quantity greater than 50'
+            },
+            {
+              "query": "SELECT * FROM orders Where unitPrice > 100",
+              "id": 3,
+              'title': 'Unit Price greater than 100'
+            }
+          ]
+        }
+      },
       queries: [
         {
           id: 1,
