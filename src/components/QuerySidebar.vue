@@ -4,6 +4,20 @@
       Analytics
     </div>
     <div class="tabs-container">
+      <!-- <v-select
+        id="data-selection"
+        v-model="selectedDataset"
+        :items="datasets"
+        label="Select Dataset"
+        item-text="label"
+        item-value="name"
+        dense
+        outlined
+        return-object
+        single-line
+        class="__select-dataset"
+        @change="datasetChanged"
+      /> -->
       <div
         v-for="tab in tabs"
         :key="tab['name']"
@@ -37,6 +51,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    dataSets: {
+      type: Array,
+      default: () => []
+    }
   },
   data: function () {
     return {};

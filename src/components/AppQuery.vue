@@ -94,7 +94,72 @@ export default {
       queryCardData: null,
       selectedData: null,
       activeVisualization: { label: "Table", name: "table", type: "table" },
-      showCardLoader: []
+      showCardLoader: [],
+      dataSets: [
+        {
+          name: 'orders',
+          label: 'Orders',
+          id: 10,
+          columns: {
+            dimensions: [
+              {
+                name: 'orderID',
+                column_id: 1,
+                label: 'Order Id',
+                data_type: 'numeric'
+              },
+              {
+                name: 'freight',
+                column_id: 2,
+                label: 'Freight',
+                data_type: 'numeric'
+              },
+              {
+                name: 'unitPrice',
+                column_id: 3,
+                label: 'Unit Price',
+                data_type: 'numeric'
+              },
+              {
+                name: 'quantity',
+                column_id: 4,
+                label: 'Quantity',
+                data_type: 'numeric'
+              },
+              {
+                name: 'discount',
+                column_id: 5,
+                label: 'Discount',
+                data_type: 'numeric'
+              },
+            ],
+            measures: [
+              {
+                name: 'city',
+                column_id: 6,
+                label: 'City',
+                data_type: 'text'
+              },
+              {
+                name: 'region',
+                column_id: 7,
+                label: 'Region',
+                data_type: 'text'
+              },
+              {
+                name: 'Country',
+                column_id: 8,
+                label: 'Country',
+                data_type: 'text'
+              },
+            ],
+            date: [],
+          },
+          format: 'json',
+          description: 'This table contains data related to food orders',
+          rows: 830
+        },
+      ]
     };
   },
   computed: {
@@ -146,7 +211,7 @@ export default {
 
       card["data"]["json"] = this.selectedData;
 
-      if ( this.activeVisualization['type'] === 'chart' ){
+      if (this.activeVisualization['type'] === 'chart') {
         card["data"]["chart"] = this.getChartData(this.activeVisualization['name'], query["columns"]);
       } else {
         card["data"]["table"] = this.getTableData(this.selectedData, query["columns"]);
@@ -166,7 +231,7 @@ export default {
       let headers = Object.keys(data[0])
         .map((key, index) => ({ name: key, label: key, index }))
         .filter((cell) => mergedColumns.includes(cell["name"]));
-      
+
       let body = data.map((row) => ({
         cells: Object.entries(row)
           .map(([key, value]) => ({ name: key, value: value, styles: {} }))
@@ -188,7 +253,7 @@ export default {
     updateVisualization: function (visualization, columns) {
       this.showCardLoader.push(true);
       this.activeVisualization = this.deepCopy(visualization);
-      if( visualization['type'] === 'chart' ){
+      if (visualization['type'] === 'chart') {
         this.queryCardData["data"]["chart"] = this.getChartData(visualization['name'], columns);
       } else {
         this.queryCardData["data"]["table"] = this.getTableData(this.selectedData, columns);
@@ -208,7 +273,7 @@ export default {
         'horizontal-bar': this.getHorizontalBarChart,
       }
 
-      if(visualizationMapping[chartType]) {
+      if (visualizationMapping[chartType]) {
         return visualizationMapping[chartType](this.getAxisBaseChart(), this.selectedData, columns)
       }
       return null;
@@ -239,6 +304,7 @@ export default {
       border-bottom: 1px solid #f6f6f6;
       padding: 0 20px;
     }
+
     .__query-content {
       width: 100%;
       padding: 20px;
