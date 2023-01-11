@@ -4,14 +4,28 @@
     class="app-table"
   >
     <div class="__table-toolbar">
-      <SvgLoader
-        width="20"
-        height="20"
-        icon-name="Download"
-        @click.native="downloadTable"
-      >
-        <DownloadSvg />
-      </SvgLoader>
+      <div class="__left-side-actions ml-2">
+        <div>Total Row count: {{ table["body"].length }}</div>
+        <v-text-field
+          v-model="searchKeyword"
+          hide-details
+          prepend-icon="mdi-magnify"
+          single-line
+          placeholder="Search in table"
+          class="__search-box"
+        />
+      </div>
+      <div class="__right-side-actions">
+        <SvgLoader
+          width="20"
+          height="20"
+          icon-name="Download"
+          class="mr-4"
+          @click.native="downloadTable"
+        >
+          <DownloadSvg />
+        </SvgLoader>
+      </div>
     </div>
     <div class="table-container">
       <table
@@ -29,9 +43,20 @@
               class="__table-header-cell"
             >
               <div class="d-flex align-items-center">
-                <p class="__title mb-0 font-medium">
-                  {{ header["label"] }}
-                </p>
+                <div class="column-header">
+                  <SvgLoader
+                    width="20"
+                    height="20"
+                    :icon-name="columnDataTypeMapping[header['data_type']]"
+                    class="__column-icon"
+                  >
+                    <component :is="columnIconMapping[header['data_type']]" />
+                    />
+                  </SvgLoader>
+                  <p class="__title mb-0 font-medium">
+                    {{ header["label"] }}
+                  </p>
+                </div>
                 <div
                   id="app-table-sorting-icon"
                   class="table-column-sorting-icon"
@@ -128,10 +153,19 @@ import SvgLoader from "./SvgLoader.vue";
 import CaretUp from "../svgs/CaretUp.vue";
 import CaretDown from "../svgs/CaretDown.vue";
 import DownloadSvg from "../svgs/DownloadSvg.vue";
+import MeasureSvg from "../svgs/MeasureSvg.vue";
+import DimensionSvg from "../svgs/DimensionSvg.vue";
 
 export default {
   name: "AppTable",
-  components: { CaretDown, CaretUp, SvgLoader, DownloadSvg },
+  components: {
+    CaretDown,
+    CaretUp,
+    SvgLoader,
+    DownloadSvg,
+    MeasureSvg,
+    DimensionSvg,
+  },
   props: {
     table: {
       type: Object,
@@ -147,12 +181,25 @@ export default {
       paginatedRows: null,
       tableData: null,
       currentPage: 1,
+      columnIconMapping: {
+        text: DimensionSvg,
+        numeric: MeasureSvg,
+      },
+      columnDataTypeMapping: {
+        text: "Dimension",
+        numeric: "Measure",
+      },
+      searchKeyword: "",
+      debounceTime: null
     };
   },
   watch: {
     table: function () {
       this.setupTable();
     },
+    searchKeyword: function () {
+      this.debounce(this.handleSearchKeyword, 500)
+    }
   },
   beforeMount() {
     this.setupTable();
@@ -217,6 +264,34 @@ export default {
       this.paginatedRows = this.getPaginatedRows(updateTable, this.currentPage);
     },
 
+    debounce: function (callback, delay) {
+      if (isNaN(delay) || !delay) {
+        callback();
+      } else {
+        clearTimeout(this.debounceTime);
+        this.debounceTime = setTimeout(callback, delay);
+      }
+    },
+
+    handleSearchKeyword: function () {
+      const keyword = this.searchKeyword && this.searchKeyword.toString().trim().toLowerCase();
+      let filteredRows = [];
+      if (keyword) {
+        filteredRows = this.table['body'].filter((row) =>
+          row["cells"].some((cell) =>
+            cell["value"].toString().toLowerCase().includes(keyword)
+          )
+        );
+      } else {
+        filteredRows = this.table['body'];
+      }
+
+      this.paginatedRows = this.getPaginatedRows(
+        filteredRows,
+        this.currentPage
+      );
+    },
+
     /**
      * Method emits 'download' event to download table data as csv
      */
@@ -227,9 +302,8 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-
 .table-container {
-  max-height: calc(100vh - 400px);
+  max-height: calc(100vh - 362px);
   overflow: auto;
 }
 .app-table {
@@ -237,11 +311,24 @@ export default {
   margin: 0 auto;
   table-layout: fixed;
   border-collapse: collapse;
+  position: relative;
 
   .__table-toolbar {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     padding-bottom: 8px;
+    align-items: center;
+
+    .__left-side-actions{
+      display: flex;
+      align-items: center;
+
+      .__search-box{
+        margin: 0 25px;
+        border-radius: 4px;
+        padding: 0 4px;
+      }
+    }
   }
 
   table,
@@ -251,14 +338,23 @@ export default {
   }
 
   .table-header {
+    position: sticky;
+    top: 0;
     .__table-header-cell {
       padding: 10px 8px;
       font-weight: normal;
       min-width: 150px;
-      background-color: rgba(var(--secondary), 0.2);
+      background-color: rgba(var(--tertiary));
 
-      .__title{
+      .column-header {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
         width: calc(100% - 20px);
+
+        .__title {
+          padding: 0 5px;
+        }
       }
     }
     .table-column-sorting-icon {
@@ -297,7 +393,7 @@ export default {
     }
   }
 
-  .table-pagination{
+  .table-pagination {
     .__arrow-right,
     .__arrow-left {
       width: 20px;
@@ -306,4 +402,17 @@ export default {
     }
   }
 }
+</style>
+<style lang="scss">
+  .app-table{
+    .v-text-field{
+      margin-top: 0;
+      padding-top: 0;
+
+      input{
+        border: none;
+        outline: none;
+      }
+    }
+  }
 </style>
