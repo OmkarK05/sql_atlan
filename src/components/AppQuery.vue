@@ -128,7 +128,7 @@ export default {
           label: "Orders",
           id: 10,
           columns: {
-            dimensions: [
+            measures: [
               {
                 name: "orderID",
                 column_id: 1,
@@ -160,7 +160,7 @@ export default {
                 data_type: "numeric",
               },
             ],
-            measures: [
+            dimensions: [
               {
                 name: "city",
                 column_id: 6,
@@ -247,7 +247,7 @@ export default {
       if (this.activeVisualization["type"] === "chart") {
         card["data"]["chart"] = this.getChartData(
           this.activeVisualization["name"],
-          query["columns"]
+          this.selectedDataset['columns']
         );
       } else {
         card["data"]["table"] = this.getTableData(this.selectedDataset['columns']);

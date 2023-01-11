@@ -98,10 +98,11 @@ export const ChartMixin = {
      */
     getSeriesData: function (data, columns, chartType) {
       let seriesDataMapping = {};
+      console.log(columns);
       // Populating seriesDataMapping with key as measure name and value as series object
       columns["measures"].forEach((measure) => {
-        seriesDataMapping[measure] = {
-          name: measure,
+        seriesDataMapping[measure["name"]] = {
+          name: measure["name"],
           type: chartType,
           stack: "total",
           data: [],
@@ -113,7 +114,7 @@ export const ChartMixin = {
           },
         };
       });
-
+      console.log(data, seriesDataMapping);
       // Populating series data for each series
       data.forEach((row) => {
         Object.entries(row).forEach(([key, value]) => {
@@ -136,7 +137,7 @@ export const ChartMixin = {
         type: "category",
         boundaryGap: false,
         data: [],
-        name: columns["dimensions"][0],
+        name: columns["dimensions"][0]["name"],
       };
 
       data.forEach((row) =>
