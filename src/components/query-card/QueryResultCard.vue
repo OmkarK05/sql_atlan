@@ -9,10 +9,13 @@
         <v-select
           id="query-card-measures-select-input"
           v-model="selectedDimensions"
-          :items="card['query']['columns']['dimensions']"
+          :items="getDimensions"
           label="Select Dimensions"
+          item-text="label"
+          item-value="name"
           dense
           outlined
+          return-object
           multiple
           class="__select-dimension"
           @change="columnsUpdated"
@@ -20,10 +23,13 @@
         <v-select
           id="query-card-dimensions-select-input"
           v-model="selectedMeasures"
-          :items="card['query']['columns']['measures']"
+          :items="getMeasures"
           label="Select Measures"
+          item-text="label"
+          item-value="name"
           dense
           outlined
+          return-object
           multiple
           class="__select-measure"
           @change="columnsUpdated"
@@ -64,6 +70,7 @@
 import AppTable from "../helpers/AppTable.vue";
 import { parse } from 'json2csv'
 import AppLoader from "../helpers/AppLoader.vue";
+import { mapGetters } from "vuex";
 
 const AppEcharts = () => import('../helpers/AppEcharts.vue');
 
@@ -82,6 +89,10 @@ export default {
     showLoading: {
       type: Boolean,
       default: false
+    },
+    selectedDataset: {
+      type: Object,
+      default: null
     }
   },
   data: function () {
@@ -98,16 +109,15 @@ export default {
       showLoader: [],
     };
   },
-  watch: {
-    card: {
-      immediate: true,
-      handler: function (data) {
-        if (data["query"]) {
-          this.selectedDimensions = data["query"]["columns"]["dimensions"];
-          this.selectedMeasures = data["query"]["columns"]["measures"];
-        }
-      },
+  computed: {
+    getDimensions: function () {
+      return this.selectedDataset && this.selectedDataset['columns']['dimensions']
     },
+    getMeasures: function (){
+      return this.selectedDataset && this.selectedDataset['columns']['measures']
+    }
+  },
+  watch: {
     visualization: {
       immediate: true,
       deep: true,
@@ -117,6 +127,8 @@ export default {
     }
   },
   beforeMount() {
+    this.selectedDimensions = this.deepCopy(this.getDimensions);
+    this.selectedMeasures = this.deepCopy(this.getMeasures);
     this.activeVisualization = this.deepCopy(this.visualization);
   },
   methods: {
@@ -172,11 +184,10 @@ export default {
 </script>
 <style lang="scss" scoped>
 .query-card {
-  padding: 20px;
+  padding: 12px;
   border-radius: 8px;
   width: 100%;
-  box-shadow: 0px 5px 5px -3px rgb(0 0 0 / 20%),
-    0px 8px 10px 1px rgb(0 0 0 / 14%), 0px 3px 14px 2px rgb(0 0 0 / 12%);
+  box-shadow: 0px 2px 8px -3px #b6b6b9;
   background: #ffffff;
   margin: 20px 0;
   position: relative;

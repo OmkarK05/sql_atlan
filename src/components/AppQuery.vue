@@ -2,7 +2,7 @@
   <div class="query-db-container">
     <div class="__query-db-sidebar">
       <QuerySidebar
-        :queries="query"
+        :queries="queries"
         :data-sets="dataSets"
         @switch-tab="switchTab"
       />
@@ -20,6 +20,7 @@
             :card="queryCardData"
             :visualization="activeVisualization"
             :show-loading="showCardLoader.length"
+            :selected-dataset="selectedDataset"
             class="__query-card"
             @columns-updated="updateVisualization"
             @visualization-changed="updateVisualization"
@@ -36,6 +37,7 @@ import SqlQueryInput from "./query-input/SqlQueryInput.vue";
 import DashboardSvg from "./svgs/DashboardSvg.vue";
 import SearchSvg from "./svgs/SearchSvg.vue";
 import { ChartMixin } from "@/mixins/chart/chartMixin";
+import { mapGetters } from "vuex";
 
 export default {
   name: "AppQuery",
@@ -50,31 +52,34 @@ export default {
           label: "Dashboard",
           icon: DashboardSvg,
           active: false,
-          disabled: true
+          disabled: true,
         },
       ],
-      query: {
-        '10': {
+      queries: {
+        10: {
           queries: [
             {
-              "query": "SELECT * FROM orders Where country='USA'",
-              "id": 1,
-              'title': 'Orders from USA'
+              query: "SELECT * FROM orders Where country='USA'",
+              id: 1,
+              title: "Orders from USA",
+              data_id: 10,
             },
             {
-              "query": "SELECT * FROM orders Where quantity > 50",
-              "id": 2,
-              'title': 'Quantity greater than 50'
+              query: "SELECT * FROM orders Where quantity > 50",
+              id: 2,
+              title: "Quantity greater than 50",
+              data_id: 10,
             },
             {
-              "query": "SELECT * FROM orders Where unitPrice > 100",
-              "id": 3,
-              'title': 'Unit Price greater than 100'
-            }
-          ]
-        }
+              query: "SELECT * FROM orders Where unitPrice > 100",
+              id: 3,
+              title: "Unit Price greater than 100",
+              data_id: 10,
+            },
+          ],
+        },
       },
-      queries: [
+      recentQueries: [
         {
           id: 1,
           query: "SELECT city, contactName, country FROM customers",
@@ -119,72 +124,75 @@ export default {
       showCardLoader: [],
       dataSets: [
         {
-          name: 'orders',
-          label: 'Orders',
+          name: "orders",
+          label: "Orders",
           id: 10,
           columns: {
             dimensions: [
               {
-                name: 'orderID',
+                name: "orderID",
                 column_id: 1,
-                label: 'Order Id',
-                data_type: 'numeric'
+                label: "orderID",
+                data_type: "numeric",
               },
               {
-                name: 'freight',
+                name: "freight",
                 column_id: 2,
-                label: 'Freight',
-                data_type: 'numeric'
+                label: "freight",
+                data_type: "numeric",
               },
               {
-                name: 'unitPrice',
+                name: "unitPrice",
                 column_id: 3,
-                label: 'Unit Price',
-                data_type: 'numeric'
+                label: "unitPrice",
+                data_type: "numeric",
               },
               {
-                name: 'quantity',
+                name: "quantity",
                 column_id: 4,
-                label: 'Quantity',
-                data_type: 'numeric'
+                label: "quantity",
+                data_type: "numeric",
               },
               {
-                name: 'discount',
+                name: "discount",
                 column_id: 5,
-                label: 'Discount',
-                data_type: 'numeric'
+                label: "discount",
+                data_type: "numeric",
               },
             ],
             measures: [
               {
-                name: 'city',
+                name: "city",
                 column_id: 6,
-                label: 'City',
-                data_type: 'text'
+                label: "city",
+                data_type: "text",
               },
               {
-                name: 'region',
+                name: "city",
                 column_id: 7,
-                label: 'Region',
-                data_type: 'text'
+                label: "city",
+                data_type: "text",
               },
               {
-                name: 'Country',
+                name: "country",
                 column_id: 8,
-                label: 'Country',
-                data_type: 'text'
+                label: "country",
+                data_type: "text",
               },
             ],
             date: [],
           },
-          format: 'json',
-          description: 'This table contains data related to food orders',
-          rows: 830
+          format: "json",
+          description: "This table contains data related to food orders",
+          rows: 830,
         },
-      ]
+      ],
     };
   },
   computed: {
+    ...mapGetters({
+      selectedDataset: 'data/getSelectedData'
+    }),
     getQueries: function () {
       return this.queries.map((query) => query["label"]);
     },
@@ -201,7 +209,7 @@ export default {
      */
     loadQueryResult: function (query = null) {
       this.queryCardData = null;
-      this.selectedData = this.getData(query['dataName']);
+      this.selectedData = this.getData(query);
       this.getQueryCard(query);
     },
 
@@ -209,14 +217,17 @@ export default {
      * Getting json data using require from /assets/json/
      * @param {String} dataName - data file name
      */
-    getData: function (dataName) {
-      let data;
+    getData: function (query) {
+      let queryData;
       try {
-        data = require(`./../assets/json/${dataName}`);
+        queryData = require(`./../assets/json/queryResult.json`)[
+          query['data_id']
+        ]['queries'].find((__query) => __query["id"] === query["id"])['data'];
       } catch (error) {
         console.log(error);
       }
-      return data;
+      console.log(queryData);
+      return queryData;
     },
 
     /**
@@ -233,10 +244,13 @@ export default {
 
       card["data"]["json"] = this.selectedData;
 
-      if (this.activeVisualization['type'] === 'chart') {
-        card["data"]["chart"] = this.getChartData(this.activeVisualization['name'], query["columns"]);
+      if (this.activeVisualization["type"] === "chart") {
+        card["data"]["chart"] = this.getChartData(
+          this.activeVisualization["name"],
+          query["columns"]
+        );
       } else {
-        card["data"]["table"] = this.getTableData(this.selectedData, query["columns"]);
+        card["data"]["table"] = this.getTableData(this.selectedDataset['columns']);
       }
 
       this.queryCardData = this.deepCopy(card);
@@ -247,18 +261,13 @@ export default {
      * @param {Array} data - json data
      * @param {Object} columns - columns object containing dimensions and measures {dimensions: [], measures: []}
      */
-    getTableData: function (data, columns) {
-      let mergedColumns = [...columns["dimensions"], ...columns["measures"]];
+    getTableData: function (columns) {
 
-      let headers = Object.keys(data[0])
-        .map((key, index) => ({ name: key, label: key, index }))
-        .filter((cell) => mergedColumns.includes(cell["name"]));
-
-      let body = data.map((row) => ({
-        cells: Object.entries(row)
-          .map(([key, value]) => ({ name: key, value: value, styles: {} }))
-          .filter((cell) => mergedColumns.includes(cell["name"])),
-      }));
+      let headers = [...columns["dimensions"], ...columns['measures']];
+      
+      let body = this.selectedData.map((row) => ({
+        cells: headers.map((header) => ({ name: header['name'], value: row[header['name']], styles: {} }))
+      }))
 
       return {
         headers,
@@ -275,12 +284,15 @@ export default {
     updateVisualization: function (visualization, columns) {
       this.showCardLoader.push(true);
       this.activeVisualization = this.deepCopy(visualization);
-      if (visualization['type'] === 'chart') {
-        this.queryCardData["data"]["chart"] = this.getChartData(visualization['name'], columns);
+      if (visualization["type"] === "chart") {
+        this.queryCardData["data"]["chart"] = this.getChartData(
+          visualization["name"],
+          columns
+        );
       } else {
-        this.queryCardData["data"]["table"] = this.getTableData(this.selectedData, columns);
+        this.queryCardData["data"]["table"] = this.getTableData(columns);
       }
-      setTimeout(() => this.showCardLoader.pop(), 1000)
+      setTimeout(() => this.showCardLoader.pop(), 1000);
     },
 
     /**
@@ -290,13 +302,17 @@ export default {
      */
     getChartData: function (chartType, columns) {
       const visualizationMapping = {
-        'bar': this.getBarChart,
-        'line': this.getLineChart,
-        'horizontal-bar': this.getHorizontalBarChart,
-      }
+        bar: this.getBarChart,
+        line: this.getLineChart,
+        "horizontal-bar": this.getHorizontalBarChart,
+      };
 
       if (visualizationMapping[chartType]) {
-        return visualizationMapping[chartType](this.getAxisBaseChart(), this.selectedData, columns)
+        return visualizationMapping[chartType](
+          this.getAxisBaseChart(),
+          this.selectedData,
+          columns
+        );
       }
       return null;
     },
@@ -329,7 +345,7 @@ export default {
 
     .__query-content {
       width: 100%;
-      padding: 20px;
+      padding: 20px 12px;
       height: 100%;
       overflow-y: scroll;
       overflow-x: hidden;

@@ -51,6 +51,7 @@
 import SvgLoader from "./helpers/SvgLoader.vue";
 import { mapActions } from 'vuex';
 import CopySvg from "./svgs/CopySvg.vue";
+import { EventBus } from '@/eventbus'
 
 export default {
   name: "QuerySidebar",
@@ -98,7 +99,7 @@ export default {
      * Method sets selected data in store
      */
     datasetChanged: function () {
-      this.setSelectedData(this.selectedData);
+      this.setSelectedData(this.selectedDataset);
     },
 
     /**
@@ -106,11 +107,12 @@ export default {
      * @param {String} query 
      */
     copyQuery: function (query) {
-      navigator.clipboard.writeText(query)
+      navigator.clipboard.writeText(query);
     },
 
     selectQuery: function (query){
       this.selectedQuery = query;
+      EventBus.$emit('selected-query', this.selectedQuery)
     }
   },
 };

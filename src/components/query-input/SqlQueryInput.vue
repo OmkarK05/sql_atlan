@@ -10,7 +10,7 @@
         @focus="showRecommendations"
       />
       <SqlQueryRecommendations
-        v-show="showQueryRecommendations"
+        v-if="showQueryRecommendations && 0"
         id="query-input-options-container"
         :recommendations="queries"
         @select="querySelected"
@@ -41,6 +41,7 @@
 import SvgLoader from '../helpers/SvgLoader.vue';
 import SqlQueryRecommendations from '../SqlQueryRecommendations.vue';
 import PlaySvg from '../svgs/PlaySvg.vue';
+import { EventBus } from '@/eventbus';
 
 
 export default {
@@ -48,8 +49,8 @@ export default {
     components: { SqlQueryRecommendations, SvgLoader, PlaySvg },
     props: {
       queries: {
-        type: Array,
-        default: () => []
+        type: Object,
+        default: () => {}
       }
     },
     data: function () {
@@ -58,6 +59,12 @@ export default {
             showQueryRecommendations: false,
             selectedQuery: null
         };
+    },
+    beforeMount: function () {
+      EventBus.$on('selected-query', this.handleSelectedQuery)
+    },
+    beforeDestroy: function () {
+      EventBus.$off('selected-query', this.handleSelectedQuery)
     },
     methods: {
       /**
@@ -72,7 +79,7 @@ export default {
        * Method is called when query is selected.
        * @params {Object} query - query object
        */
-      querySelected: function(query){
+       handleSelectedQuery: function(query){
         this.query = query['query'];
         this.selectedQuery = query;
       },
@@ -89,7 +96,7 @@ export default {
        */
       hideRecommendations: function () {
         this.showQueryRecommendations = false
-      }
+      },
     }
 }
 </script>
