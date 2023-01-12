@@ -132,7 +132,6 @@ export default {
     border-radius: 4px;
     display: flex;
     flex-direction: column;
-    align-items: center;
     margin: 6px 0;
 
     .__title{
@@ -144,6 +143,7 @@ export default {
     .__query{
       font-size: 14px;
       color: rgb(103, 102, 102);
+      text-align: left;
     }
 
     .__header{
