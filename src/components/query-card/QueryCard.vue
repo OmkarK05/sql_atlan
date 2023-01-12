@@ -70,12 +70,11 @@
 import AppTable from "../helpers/AppTable.vue";
 import { parse } from 'json2csv'
 import AppLoader from "../helpers/AppLoader.vue";
-import { mapGetters } from "vuex";
 
 const AppEcharts = () => import('../helpers/AppEcharts.vue');
 
 export default {
-  name: "QueryResultCard",
+  name: "QueryCard",
   components: { AppEcharts, AppTable, AppLoader },
   props: {
     card: {

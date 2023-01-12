@@ -16,7 +16,7 @@
           @run-query="loadQueryResult"
         />
         <template v-if="queryCardData">
-          <QueryResultCard
+          <QueryCard
             :card="queryCardData"
             :visualization="activeVisualization"
             :show-loading="!! showCardLoader.length"
@@ -31,15 +31,15 @@
   </div>
 </template>
 <script>
-import QueryResultCard from "./query-card/QueryResultCard.vue";
 import QuerySidebar from "./QuerySidebar.vue";
 import SqlQueryInput from "./query-input/SqlQueryInput.vue";
 import { ChartMixin } from "@/mixins/chart/chartMixin";
 import { mapGetters } from "vuex";
+const QueryCard = () => import('./query-card/QueryCard.vue');
 
 export default {
   name: "AppQuery",
-  components: { SqlQueryInput, QueryResultCard, QuerySidebar },
+  components: { SqlQueryInput, QueryCard, QuerySidebar },
   mixins: [ChartMixin],
   data: function () {
     return {
