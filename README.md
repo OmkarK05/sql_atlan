@@ -36,8 +36,8 @@ Create, design and implement a web-based application capable of running SQL quer
 
 #### Features: 
 
-1. Three queries are available to get table of customers, products and orders
-2. Click on text input to get queries dropdown, select query and click run
+1. 2 tables are available Orders and Products which have in total 5 queries.
+2. Select data set from left sidebar and then select query and click Run Query
 3. The Result of the query will be shown below.
 4. Measures and Dimensions can be toggled to enable/disable them in result.
 5. 4 different visualizations are available table, line-chart, bar-chart and horizontal bar chart.
@@ -78,11 +78,13 @@ Performance score after optimization is 99 with below metrics
 1. Lazy-loading :
     Was importing echarts charts library in main.js which was causing issue.
     Moved echart import to AppEcharts component and lazy loaded AppEcharts component
+    Lazy loaded QueryCard component which loads table and charts
 
 2. Eliminated render-blocking resources :
     In index.html there were 2 render blocking stylesheet resources of font and icons.
     Improved it by "preload"
 
+3. Loaded query data json on running query
 
 ## Getting Started
 
