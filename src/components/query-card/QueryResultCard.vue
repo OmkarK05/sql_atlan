@@ -2,7 +2,7 @@
   <div class="query-card">
     <AppLoader
       v-if="showLoading"
-      message="Building Visualization"
+      message="Building Data"
     />
     <div class="change-visualization-container">
       <div class="__columns">

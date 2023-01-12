@@ -110,42 +110,6 @@
         </tbody>
       </table>
     </div>
-    <div
-      v-if="tableData && tableData['pagination'] && false"
-      class="mt-3 d-flex justify-content-end align-items-center table-pagination"
-    >
-      <Button
-        id="app-table-pagination-previous-button"
-        size="sm"
-        class-name="p-1"
-        disabled="{disablePrev}"
-        @click="() => handlePagination('prev')"
-      >
-        <img
-          class="__arrow-left"
-          alt="Previous"
-          src="{arrowLeft}"
-        >
-      </Button>
-      <span id="app-table-pagination-text">
-        <span class="mx-2 text-bold">{currentPage}</span>
-        <span class="mx-1">in</span>
-        <span class="mx-2 text-bold">{table["pagination"]["total_pages"]}</span>
-      </span>
-      <Button
-        id="app-table-pagination-next-button"
-        size="sm"
-        class-name="p-1"
-        disabled="{disableNext}"
-        @click="() => handlePagination('next')"
-      >
-        <img
-          class="__arrow-right"
-          alt="Next"
-          src="{arrowRight}"
-        >
-      </Button>
-    </div>
   </div>
 </template>
 <script>
@@ -319,11 +283,11 @@ export default {
     padding-bottom: 8px;
     align-items: center;
 
-    .__left-side-actions{
+    .__left-side-actions {
       display: flex;
       align-items: center;
 
-      .__search-box{
+      .__search-box {
         margin: 0 25px;
         border-radius: 4px;
         padding: 0 4px;
@@ -404,15 +368,15 @@ export default {
 }
 </style>
 <style lang="scss">
-  .app-table{
-    .v-text-field{
-      margin-top: 0;
-      padding-top: 0;
+.app-table {
+  .v-text-field {
+    margin-top: 0;
+    padding-top: 0;
 
-      input{
-        border: none;
-        outline: none;
-      }
+    input {
+      border: none;
+      outline: none;
     }
   }
+}
 </style>

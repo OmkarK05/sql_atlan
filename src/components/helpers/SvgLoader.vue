@@ -11,7 +11,7 @@
     <title
       :id="id"
       lang="en"
-    >{{ iconName }} icon</title>
+    >{{ iconName }}</title>
     <g :fill="color">
       <slot />
     </g>

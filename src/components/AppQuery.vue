@@ -19,7 +19,7 @@
           <QueryResultCard
             :card="queryCardData"
             :visualization="activeVisualization"
-            :show-loading="showCardLoader.length"
+            :show-loading="!! showCardLoader.length"
             :selected-dataset="selectedDataset"
             class="__query-card"
             @columns-updated="updateVisualization"
@@ -34,8 +34,6 @@
 import QueryResultCard from "./query-card/QueryResultCard.vue";
 import QuerySidebar from "./QuerySidebar.vue";
 import SqlQueryInput from "./query-input/SqlQueryInput.vue";
-import DashboardSvg from "./svgs/DashboardSvg.vue";
-import SearchSvg from "./svgs/SearchSvg.vue";
 import { ChartMixin } from "@/mixins/chart/chartMixin";
 import { mapGetters } from "vuex";
 
@@ -45,16 +43,6 @@ export default {
   mixins: [ChartMixin],
   data: function () {
     return {
-      tabs: [
-        { name: "query", label: "Query", icon: SearchSvg, active: true },
-        {
-          name: "dashboard",
-          label: "Dashboard",
-          icon: DashboardSvg,
-          active: false,
-          disabled: true,
-        },
-      ],
       queries: {
         10: {
           queries: [
@@ -78,46 +66,23 @@ export default {
             },
           ],
         },
+        11: {
+          queries: [
+            {
+              query: "SELECT * FROM products",
+              id: 4,
+              title: "All Products",
+              data_id: 11,
+            },
+            {
+              query: "SELECT * FROM orders Where unitPrics > 25",
+              id: 5,
+              title: "Products with unit price greater than 25",
+              data_id: 11,
+            },
+          ],
+        }
       },
-      recentQueries: [
-        {
-          id: 1,
-          query: "SELECT city, contactName, country FROM customers",
-          label: "Get customers",
-          dataName: "customers.json",
-          columns: {
-            dimensions: ["city", "customerID", "contactName", "country"],
-            measures: [],
-          },
-        },
-        {
-          id: 2,
-          query:
-            "SELECT country, region, city, quantity, unitPrice  FROM orders",
-          label: "Get Orders",
-          dataName: "orders.json",
-          columns: {
-            dimensions: ["country", "region", "city"],
-            measures: [
-              "quantity",
-              "unitPrice",
-              "discount",
-              "freight",
-              "orderID",
-            ],
-          },
-        },
-        {
-          id: 3,
-          query: "SELECT name, unitsInStock, unitPrice FROM products",
-          label: "Get Products",
-          dataName: "products.json",
-          columns: {
-            dimensions: ["productID", "name"],
-            measures: ["unitsInStock", "unitPrice"],
-          },
-        },
-      ],
       queryCardData: null,
       selectedData: null,
       activeVisualization: { label: "Table", name: "table", type: "table" },
@@ -186,6 +151,45 @@ export default {
           description: "This table contains data related to food orders",
           rows: 830,
         },
+        {
+          name: "products",
+          label: "Products",
+          id: 11,
+          columns: {
+            measures: [
+              {
+                name: "productID",
+                column_id: 1,
+                label: "productID",
+                data_type: "numeric",
+              },
+              {
+                name: "unitPrice",
+                column_id: 2,
+                label: "unitPrice",
+                data_type: "numeric",
+              },
+              {
+                name: "unitsInStock",
+                column_id: 3,
+                label: "unitsInStock",
+                data_type: "numeric",
+              },
+            ],
+            dimensions: [
+              {
+                name: "name",
+                column_id: 6,
+                label: "name",
+                data_type: "text",
+              },
+            ],
+            date: [],
+          },
+          format: "json",
+          description: "This table contains data related to food products available",
+          rows: 830,
+        },
       ],
     };
   },
@@ -208,9 +212,11 @@ export default {
      * @param {Object} query - selected query
      */
     loadQueryResult: function (query = null) {
+      this.showCardLoader.push(true);
       this.queryCardData = null;
       this.selectedData = this.getData(query);
       this.getQueryCard(query);
+      setTimeout(() => this.showCardLoader.pop(), 1000);
     },
 
     /**
@@ -315,12 +321,6 @@ export default {
         );
       }
       return null;
-    },
-
-    switchTab: function (tab) {
-      this.tabs.forEach(
-        (__tab) => (__tab["active"] = __tab["name"] === tab["name"])
-      );
     },
   },
 };

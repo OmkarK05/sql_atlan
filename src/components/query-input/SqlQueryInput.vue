@@ -4,16 +4,8 @@
       <textarea
         id="query-text-area-input"
         v-model="query"
-        v-click-outside="hideRecommendations"
         class="__text-area"
         placeholder="Enter your query here"
-        @focus="showRecommendations"
-      />
-      <SqlQueryRecommendations
-        v-if="showQueryRecommendations && 0"
-        id="query-input-options-container"
-        :recommendations="queries"
-        @select="querySelected"
       />
       <v-btn
         id="query-input-run-query-button"
@@ -39,14 +31,13 @@
 </template>
 <script>
 import SvgLoader from '../helpers/SvgLoader.vue';
-import SqlQueryRecommendations from '../SqlQueryRecommendations.vue';
 import PlaySvg from '../svgs/PlaySvg.vue';
 import { EventBus } from '@/eventbus';
 
 
 export default {
     name: "SqlQueryInput",
-    components: { SqlQueryRecommendations, SvgLoader, PlaySvg },
+    components: { SvgLoader, PlaySvg },
     props: {
       queries: {
         type: Object,
@@ -56,7 +47,6 @@ export default {
     data: function () {
         return {
             query: "",
-            showQueryRecommendations: false,
             selectedQuery: null
         };
     },
@@ -82,20 +72,6 @@ export default {
        handleSelectedQuery: function(query){
         this.query = query['query'];
         this.selectedQuery = query;
-      },
-
-      /**
-       * Methot to display query recommendations popup
-       */
-      showRecommendations: function() {
-        this.showQueryRecommendations = true
-      },
-
-      /**
-       * Methot to hide recommendations popup
-       */
-      hideRecommendations: function () {
-        this.showQueryRecommendations = false
       },
     }
 }
