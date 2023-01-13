@@ -51,10 +51,10 @@ export default {
         };
     },
     beforeMount: function () {
-      EventBus.$on('selected-query', this.handleSelectedQuery)
+      EventBus.$on('query-selected', this.handleSelectedQuery)
     },
     beforeDestroy: function () {
-      EventBus.$off('selected-query', this.handleSelectedQuery)
+      EventBus.$off('query-selected', this.handleSelectedQuery)
     },
     methods: {
       /**
