@@ -113,12 +113,12 @@
   </div>
 </template>
 <script>
-import SvgLoader from "./SvgLoader.vue";
-import CaretUp from "../svgs/CaretUp.vue";
-import CaretDown from "../svgs/CaretDown.vue";
-import DownloadSvg from "../svgs/DownloadSvg.vue";
-import MeasureSvg from "../svgs/MeasureSvg.vue";
-import DimensionSvg from "../svgs/DimensionSvg.vue";
+import SvgLoader from "../../helpers/SvgLoader.vue";
+import CaretUp from "../../svgs/CaretUp.vue";
+import CaretDown from "../../svgs/CaretDown.vue";
+import DownloadSvg from "../../svgs/DownloadSvg.vue";
+import MeasureSvg from "../../svgs/MeasureSvg.vue";
+import DimensionSvg from "../../svgs/DimensionSvg.vue";
 
 export default {
   name: "AppTable",

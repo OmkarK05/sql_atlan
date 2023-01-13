@@ -30,8 +30,8 @@
   </div>
 </template>
 <script>
-import SvgLoader from '../helpers/SvgLoader.vue';
-import PlaySvg from '../svgs/PlaySvg.vue';
+import SvgLoader from '@/components/helpers/SvgLoader.vue';
+import PlaySvg from '@/components/svgs/PlaySvg.vue';
 import { EventBus } from '@/eventbus';
 
 

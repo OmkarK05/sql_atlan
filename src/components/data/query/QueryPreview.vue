@@ -1,5 +1,8 @@
-<template lang="">
-  <div class="query-card">
+<template>
+  <div
+    id="query-card"
+    class="query-card"
+  >
     <AppLoader
       v-if="showLoading"
       message="Building Data"
@@ -55,7 +58,7 @@
     <template
       v-if="activeVisualization['type'] === 'table' && card && card['data']"
     >
-      <AppTable
+      <DataTable
         :table="card['data']['table']"
         @download="downloadTableData"
       />
@@ -67,15 +70,15 @@
   </div>
 </template>
 <script>
-import AppTable from "../helpers/AppTable.vue";
+import DataTable from "../preview/DataTable.vue";
 import { parse } from 'json2csv'
-import AppLoader from "../helpers/AppLoader.vue";
+import AppLoader from "../../helpers/AppLoader.vue";
 
-const AppEcharts = () => import('../helpers/AppEcharts.vue');
+const AppEcharts = () => import('../../helpers/AppEcharts.vue');
 
 export default {
   name: "QueryCard",
-  components: { AppEcharts, AppTable, AppLoader },
+  components: { AppEcharts, DataTable, AppLoader },
   props: {
     card: {
       type: Object,

@@ -1,17 +1,17 @@
 <template>
   <v-app>
-    <AppQuery />
+    <DataQuery />
   </v-app>
 </template>
 
 <script>
-import AppQuery from './components/AppQuery.vue';
+import DataQuery from './components/data/query/DataQuery.vue';
 
 export default {
   name: 'App',
 
   components: {
-    AppQuery
+    DataQuery
 },
 
   data: () => ({

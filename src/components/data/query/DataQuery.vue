@@ -1,22 +1,21 @@
 <template>
   <div class="query-db-container">
     <div class="__query-db-sidebar">
-      <QuerySidebar
+      <DataLeftSidebar
         :queries="queries"
         :data-sets="dataSets"
-        @switch-tab="switchTab"
       />
     </div>
     <div class="__query-content-container">
       <div class="__query-content">
-        <SqlQueryInput
+        <QueryInput
           id="sql-query-input-text-area"
           :queries="queries"
           class="__query-input"
           @run-query="loadQueryResult"
         />
         <template v-if="queryCardData">
-          <QueryCard
+          <QueryPreview
             :card="queryCardData"
             :visualization="activeVisualization"
             :show-loading="!! showCardLoader.length"
@@ -31,15 +30,15 @@
   </div>
 </template>
 <script>
-import QuerySidebar from "./QuerySidebar.vue";
-import SqlQueryInput from "./query-input/SqlQueryInput.vue";
+import DataLeftSidebar from "../sidebar/DataLeftSidebar.vue";
+import QueryInput from "./QueryInput.vue";
 import { ChartMixin } from "@/mixins/chart/chartMixin";
 import { mapGetters } from "vuex";
-const QueryCard = () => import('./query-card/QueryCard.vue');
+const QueryPreview = () => import('./QueryPreview.vue');
 
 export default {
   name: "AppQuery",
-  components: { SqlQueryInput, QueryCard, QuerySidebar },
+  components: { QueryInput, QueryPreview, DataLeftSidebar },
   mixins: [ChartMixin],
   data: function () {
     return {
@@ -226,9 +225,8 @@ export default {
     getData: function (query) {
       let queryData;
       try {
-        queryData = require(`./../assets/json/queryResult.json`)[
-          query['data_id']
-        ]['queries'].find((__query) => __query["id"] === query["id"])['data'];
+        let data = require(`../../../assets/json/queryResult.json`);
+        queryData = data[query['data_id']]['queries'].find((__query) => __query["id"] === query["id"])['data'];
       } catch (error) {
         console.log(error);
       }

@@ -48,10 +48,10 @@
   </div>
 </template>
 <script>
-import SvgLoader from "./helpers/SvgLoader.vue";
+import SvgLoader from "@/components/helpers/SvgLoader.vue";
 import { mapActions } from 'vuex';
-import CopySvg from "./svgs/CopySvg.vue";
-import { EventBus } from '@/eventbus'
+import CopySvg from "@/components/svgs/CopySvg.vue";
+import { EventBus } from '@/eventbus';
 
 export default {
   name: "QuerySidebar",
