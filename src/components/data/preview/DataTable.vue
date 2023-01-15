@@ -29,7 +29,7 @@
     </div>
     <div class="table-container">
       <table
-        id="app-table"
+        id="data-table"
         class="app-table"
       >
         <thead
@@ -39,6 +39,7 @@
           <tr>
             <th
               v-for="(header, index) in tableData['headers']"
+              :id="`table-header-${header['label']}`"
               :key="`table-header-${header['label']}`"
               class="__table-header-cell"
             >
@@ -101,6 +102,7 @@
           >
             <td
               v-for="(cell, cellIndex) in row['cells']"
+              :id="`table-body-cell-${cell['value']}-${cellIndex}`"
               :key="`table-body-cell-${cell['value']}-${cellIndex}`"
               class="__cell bg-tertiary font-medium"
             >
