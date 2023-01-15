@@ -1,10 +1,14 @@
 <template>
   <div class="queries-container">
-    <div class="__title">
+    <div
+      id="query-list-title"
+      class="__title"
+    >
       Suggested Queries
     </div>
     <div
       v-for="query in queries"
+      :id="`query-${query['id']}`"
       :key="query['id']"
       @click="selectQuery(query)"
     >
