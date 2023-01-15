@@ -1,10 +1,26 @@
 :root{
-    --primary: 108, 0, 255; // 6c00ff
-    --secondary: 60, 121, 245;
-    --tertiary: 213, 228, 255;
+    --primary: 45, 123, 216; // 6c00ff
+    --secondary: 13, 34, 55;
+    --tertiary: 208, 231, 254;
     --background:248, 248, 248;
+    --info: 255, 132, 43
 }
 
 html{
     overflow: hidden !important;
+}
+
+$fontSizes : (
+    'small': 12px,
+    'regular': 14px,
+    'medium': 16px,
+    'large': 18px,
+    'larger': 22px,
+    'largest': 24px,
+);
+
+@each $fontName, $fontSize in $fontSizes {
+    .font-#{$fontName} { 
+        font-size: $fontSize;
+    }
 }
