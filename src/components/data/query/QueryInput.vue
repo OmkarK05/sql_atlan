@@ -40,12 +40,6 @@ import { EventBus } from '@/eventbus';
 export default {
     name: "SqlQueryInput",
     components: { SvgLoader, PlaySvg },
-    props: {
-      queries: {
-        type: Object,
-        default: () => {}
-      }
-    },
     data: function () {
         return {
             query: "",
