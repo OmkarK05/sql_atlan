@@ -48,8 +48,11 @@ Create, design and implement a web-based application capable of running SQL quer
 
 - Vue.js 2.6 https://v2.vuejs.org/
 - Vuetify https://vuetifyjs.com/en/
-- Cypress https://docs.cypress.io/guides/overview/why-cypress
+- Jest https://jestjs.io/
+- Vue-test-utils https://v1.test-utils.vuejs.org/
+- Vuex https://vuex.vuejs.org/
 - Echarts https://echarts.apache.org/en/index.html
+- json2csv https://www.npmjs.com/package/json-2-csv
 
 <!-- GETTING STARTED -->
 
