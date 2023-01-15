@@ -10,14 +10,16 @@
       <v-btn
         id="query-input-run-query-button"
         color="primary"
-        class="mt-2"
+        class="mt-1 ml-1"
+        small
+        :disabled="!!! selectedQuery"
         @click="runQuery"
       >
         <div class="__run-query-icon">
           <SvgLoader
             icon-name="Run Query"
-            width="18"
-            height="18"
+            width="14"
+            height="14"
             color="#ffffff"
             class="mr-1"
           >
@@ -78,11 +80,11 @@ export default {
 </script>
 <style lang="scss" scoped>
     .sql-input-container {
-      text-align: right;
+      text-align: left;
       position: relative;
       .__text-area {
         width: 100%;
-        min-height: 100px;
+        min-height: 80px;
         border: 1px solid rgba(var(--primary), 0.1);
         border-radius: 4px;
         padding: 8px 10px;

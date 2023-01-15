@@ -55,17 +55,12 @@
         />
       </div>
     </div>
-    <template
-      v-if="activeVisualization['type'] === 'table' && card && card['data']"
-    >
-      <DataTable
-        :table="card['data']['table']"
-        @download="downloadTableData"
+    <div class="preview-content-container">
+      <component
+        :is="getVisualization[activeVisualization['type']]"
+        v-bind="getProps"
+        @download="downloadTableData[activeVisualization['type']]"
       />
-    </template>
-
-    <div v-show="activeVisualization['type'] === 'chart' && card && card['data']">
-      <AppEcharts :chart-data="card['data']['chart']" />
     </div>
   </div>
 </template>
@@ -109,6 +104,10 @@ export default {
       selectedMeasures: [],
       activeVisualization: {},
       showLoader: [],
+      getVisualization: {
+        'chart': AppEcharts,
+        'table': DataTable
+      },
     };
   },
   computed: {
@@ -117,7 +116,16 @@ export default {
     },
     getMeasures: function (){
       return this.selectedDataset && this.selectedDataset['columns']['measures']
-    }
+    },
+    showTable: function () {
+      return activeVisualization['type'] === 'table' && card && card['data']
+    },
+    getProps: function () {
+      return {
+        'chart': this.card['data']['chart'],
+        'table': this.card['data']['table']
+      }
+    },
   },
   watch: {
     visualization: {
@@ -126,12 +134,15 @@ export default {
       handler: function () {
         this.activeVisualization = this.deepCopy(this.visualization);
       }
+    },
+    selectedDataset: {
+      deep: true,
+      immediate: true,
+      handler: function () {
+        this.selectedDimensions = this.deepCopy(this.getDimensions);
+        this.selectedMeasures = this.deepCopy(this.getMeasures);
+      }
     }
-  },
-  beforeMount() {
-    this.selectedDimensions = this.deepCopy(this.getDimensions);
-    this.selectedMeasures = this.deepCopy(this.getMeasures);
-    this.activeVisualization = this.deepCopy(this.visualization);
   },
   methods: {
     /**
@@ -191,8 +202,11 @@ export default {
   width: 100%;
   box-shadow: 0px 2px 8px -3px #b6b6b9;
   background: #ffffff;
-  margin: 20px 0;
+  margin-top: 24px;
+  border: 1px solid #e1e1e1;
   position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .change-visualization-container {
@@ -214,6 +228,9 @@ export default {
     width: 200px;
     margin: 0 8px;
   }
+}
+.preview-content-container{
+  height: calc(100% - 66px);
 }
 </style>
 <style lang="scss">

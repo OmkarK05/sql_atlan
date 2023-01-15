@@ -8,6 +8,18 @@
     </div>
     <div class="__query-content-container">
       <div class="__query-content">
+        <DataToolbar class="mb-4" />
+        <div class="font-large mb-2 __header ml-1">
+          <SvgLoader
+            width="20"
+            height="20"
+            icon-name="Query"
+            class="mr-1"
+          >
+            <CodeSvg />
+          </SvgLoader>
+          Query
+        </div>
         <QueryInput
           id="sql-query-input-text-area"
           :queries="queries"
@@ -34,11 +46,14 @@ import DataLeftSidebar from "../sidebar/DataLeftSidebar.vue";
 import QueryInput from "./QueryInput.vue";
 import { ChartMixin } from "@/mixins/chart/chartMixin";
 import { mapGetters } from "vuex";
+import DataToolbar from "../preview/DataToolbar.vue";
+import SvgLoader from "@/components/helpers/SvgLoader.vue";
+import CodeSvg from '../../svgs/CodeSvg.vue'
 const QueryPreview = () => import('./QueryPreview.vue');
 
 export default {
   name: "AppQuery",
-  components: { QueryInput, QueryPreview, DataLeftSidebar },
+  components: { QueryInput, QueryPreview, DataLeftSidebar, DataToolbar, SvgLoader, CodeSvg },
   mixins: [ChartMixin],
   data: function () {
     return {
@@ -149,6 +164,19 @@ export default {
           format: "json",
           description: "This table contains data related to food orders",
           rows: 830,
+          colummn_count: 8,
+          created: 'Sat Jan 7 2023 10:38:20',
+          modified: 'Tue Jan 10 2023 11:38:20',
+          data_source: {
+            name: "Sample Food Data",
+            id: 1,
+            source: "snowflake",
+            owner: {
+              name: "Omkar Kesarkhane",
+              id: 2,
+              email: "omkesarkhane@gmail.com",
+            },
+          }
         },
         {
           name: "products",
@@ -187,7 +215,20 @@ export default {
           },
           format: "json",
           description: "This table contains data related to food products available",
-          rows: 830,
+          row_count: 830,
+          column_count: 4,
+          created: 'Sun Jan 7 2023 17:38:20',
+          modified: 'Sun Jan 8 2023 17:38:20',
+          data_source: {
+            name: "Sample Food Data",
+            id: 1,
+            source: "snowflake",
+            owner: {
+              name: "Omkar Kesarkhane",
+              id: 2,
+              email: "omkesarkhane@gmail.com",
+            },
+          }
         },
       ],
     };
@@ -333,23 +374,20 @@ export default {
     position: relative;
     height: 100vh;
     background-color: rgba(var(--background), 1);
-
-    .__navbar {
-      width: 100%;
-      height: 40px;
-      border-bottom: 1px solid #f6f6f6;
-      padding: 0 20px;
-    }
-
     .__query-content {
       width: 100%;
-      padding: 20px 12px;
+      padding: 12px;
       height: 100%;
-      overflow-y: scroll;
+      overflow-y: auto;
       overflow-x: hidden;
 
+      .__header{
+        display: flex;
+        align-items: center;
+      }
+
       .__query-card {
-        max-height: 100%;
+        height: calc(100vh - 285px); // 100vh minus (query Input height  + data toolbar height)
       }
     }
   }

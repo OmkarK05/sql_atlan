@@ -5,7 +5,7 @@
   >
     <div class="__header">
       <p
-        class="__title mb-1"
+        class="__title font-medium"
         :title="query['title']"
       >
         {{ query["title"] }}
@@ -15,14 +15,15 @@
           width="14"
           height="14"
           icon-name="Copy"
+          color="inherit"
           @click.native="copyQuery(query['query'])"
         >
           <CopySvg />
         </SvgLoader>
       </div>
     </div>
-    <div class="__query">
-      {{ query["query"] }}
+    <div class="__query font-small">
+      {{ getFormattedQuery }}
     </div>
   </div>
 </template>
@@ -50,6 +51,9 @@ export default {
         this.selectedQuery && this.query["id"] === this.selectedQuery["id"]
       );
     },
+    getFormattedQuery: function () {
+      return this.query['query'] > 80 ?  this.query['query'].slice(0, 90)  + '...' : this.query['query'];
+    }
   },
   methods: {
     /**
@@ -74,16 +78,16 @@ export default {
   margin: 6px 0;
 
   .__title {
-    font-size: 15px;
     width: calc(100% - 16px);
     padding-right: 8px;
+    margin-bottom: 6px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    color: rgba(var(--secondary), 1);
   }
 
   .__query {
-    font-size: 13px;
     color: rgb(103, 102, 102);
     text-align: left;
   }
@@ -97,10 +101,15 @@ export default {
     .__copy-icon {
       align-self: flex-start;
       padding-top: 2px;
+      fill: rgba(var(--secondary, 1));
+
+      &:hover{
+        fill: rgba(var(--primary, 1));
+      }
     }
   }
   &.--active {
-    background-color: rgba(var(--secondary), 0.2) !important;
+    background-color: rgba(var(--tertiary), 1) !important;
   }
 
   &:hover {

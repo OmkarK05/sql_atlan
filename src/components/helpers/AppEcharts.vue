@@ -2,7 +2,7 @@
   <div>
     <Chart
       ref="echarts"
-      :options="chartData"
+      :options="chart"
       autoresize
     />
   </div>
@@ -15,7 +15,7 @@ export default {
     name: "AppEcharts",
     components: { Chart },
     props: {
-      chartData: {
+      chart: {
         type: Object,
         default: () => {}
       }

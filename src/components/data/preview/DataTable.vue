@@ -267,7 +267,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .table-container {
-  max-height: calc(100vh - 362px);
+  height: calc(100% - 40px);
   overflow: auto;
 }
 .app-table {
@@ -351,7 +351,7 @@ export default {
       }
 
       .__cell {
-        padding: 2px 8px;
+        padding: 8px;
         font-weight: normal;
       }
     }
