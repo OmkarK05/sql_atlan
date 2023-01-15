@@ -1,10 +1,15 @@
 <template>
   <div
+    id="query-details-block"
     class="query-block"
     :class="isQuerySelected ? '--active': ''"
   >
-    <div class="__header">
+    <div
+      id="query-details-header"
+      class="__header"
+    >
       <p
+        id="query-details-header-title"
         class="__title font-medium"
         :title="query['title']"
       >
@@ -22,7 +27,10 @@
         </SvgLoader>
       </div>
     </div>
-    <div class="__query font-small">
+    <div
+      id="query-details-query"
+      class="__query font-small"
+    >
       {{ getFormattedQuery }}
     </div>
   </div>
