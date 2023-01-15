@@ -2,7 +2,7 @@ export const data = {
   namespaced: true,
 
   state: {
-    selectedData: {},
+    selectedData: null,
   },
 
   getters: {
