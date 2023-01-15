@@ -1,6 +1,10 @@
 <template>
-  <div class="data-toolbar-container">
+  <div
+    v-if="selectedData"
+    class="data-toolbar-container"
+  >
     <SvgLoader
+      id="data-toolbar-table-icon"
       width="30"
       height="30"
       color="#ao8986"
@@ -10,10 +14,16 @@
     </SvgLoader>
     <div class="data-details-container">
       <div class="data-details">
-        <div class="font-larger pr-4">
+        <div
+          id="data-toolbar-table-name"
+          class="font-larger pr-4"
+        >
           {{ selectedData["name"] }}
         </div>
-        <div class="font-regular">
+        <div
+          id="data-toolbar-last-update-time"
+          class="font-regular"
+        >
           last updated on {{ getFormattedDate(selectedData['modified']) }}
         </div>
       </div>
@@ -21,17 +31,23 @@
         <div class="font-regular">
           Table
         </div>
-        <div class="font-regular __data-source">
+        <div
+          id="data-toolbar-data-source"
+          class="font-regular __data-source"
+        >
           <SvgLoader
             width="14"
             height="auto"
             class="__icon"
           >
-            <component :is="dataSourceIconsMapping[selectedData['data_source']['source']]" />
+            <component :is="dataSourceIconsMapping['snowflake']" />
           </SvgLoader>
           {{ selectedData['data_source']['source'] }}
         </div>
-        <div class="font-regular __db-name">
+        <div
+          id="data-toolbar-data-base"
+          class="font-regular __db-name"
+        >
           <SvgLoader
             width="14"
             height="14"
@@ -41,10 +57,16 @@
           </SvgLoader>
           {{ selectedData['data_source']['name'] }}
         </div>
-        <div class="font-regular">
+        <div
+          id="data-row-count"
+          class="font-regular"
+        >
           {{ selectedData['row_count'] }} rows
         </div>
-        <div class="font-regular">
+        <div
+          id="data-column-count"
+          class="font-regular"
+        >
           {{ selectedData['column_count'] }} columns
         </div>
       </div>
@@ -56,7 +78,6 @@
 import SvgLoader from "@/components/helpers/SvgLoader.vue";
 import { mapGetters } from "vuex";
 import TableSvg from "@/components/svgs/TableSvg.vue";
-import { data } from "@/store/components/data";
 import SnowflakeSvg from "@/components/svgs/SnowflakeSvg.vue";
 import DatabaseSvg from "@/components/svgs/DatabaseSvg.vue";
 
