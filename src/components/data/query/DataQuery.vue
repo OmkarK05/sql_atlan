@@ -147,9 +147,9 @@ export default {
                 data_type: "text",
               },
               {
-                name: "city",
+                name: "region",
                 column_id: 7,
-                label: "city",
+                label: "region",
                 data_type: "text",
               },
               {
