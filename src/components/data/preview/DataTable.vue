@@ -102,7 +102,7 @@
           >
             <td
               v-for="(cell, cellIndex) in row['cells']"
-              :id="`table-body-cell-${cell['value']}-${cellIndex}`"
+              :id="`table-body-cell-${cell['name']}-${cellIndex}`"
               :key="`table-body-cell-${cell['value']}-${cellIndex}`"
               class="__cell bg-tertiary font-medium"
             >
@@ -278,6 +278,7 @@ export default {
   table-layout: fixed;
   border-collapse: collapse;
   position: relative;
+  height: 100%;
 
   .__table-toolbar {
     display: flex;
