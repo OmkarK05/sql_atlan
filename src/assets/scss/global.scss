@@ -24,3 +24,37 @@ $fontSizes : (
         font-size: $fontSize;
     }
 }
+
+.scrollbar {
+    scroll-behavior: smooth;
+    margin-right: 0;
+  
+    &::-webkit-scrollbar-track {
+      -webkit-box-shadow: none;
+      box-shadow: none;
+      background-color: transparent;
+      margin: 0;
+      cursor: pointer;
+    }
+  
+    &::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+      background-color: transparent;
+      cursor: pointer;
+    }
+  
+    &::-webkit-scrollbar-thumb {
+      -webkit-box-shadow: none;
+      box-shadow: none;
+      background-color: #0000003A;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  
+    &::-webkit-scrollbar-thumb:hover {
+      background-color: #0000003A;
+      cursor: pointer;
+    }
+  }
+  
