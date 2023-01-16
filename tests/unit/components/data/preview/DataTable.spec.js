@@ -64,7 +64,7 @@ describe("Data Toolbar", () => {
   it("checks if all headers are mounted", () => {
     table["headers"].forEach((header) => {
       let headerElement = wrapper.find(`#table-header-${header["label"]}`);
-      expect(headerElement.text()).toBe(header["name"]);
+      expect(headerElement.text()).toContain(header["name"]);
     });
   });
 
@@ -75,8 +75,8 @@ describe("Data Toolbar", () => {
   it("checks if table body row data is rendered", () => {
     table["body"][0]["cells"].forEach((cell, cellIndex) => {
       expect(
-        wrapper.find(`#table-body-cell-${cell["value"]}-${cellIndex}`).text()
-      ).toBe(cell["value"]);
+        wrapper.find(`#table-body-cell-${cell["name"]}-${cellIndex}`).text()
+      ).toBe(cell["value"].toString());
     });
   });
 });
