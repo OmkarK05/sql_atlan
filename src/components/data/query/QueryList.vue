@@ -6,16 +6,18 @@
     >
       Suggested Queries
     </div>
-    <div
-      v-for="query in queries"
-      :id="`query-${query['id']}`"
-      :key="query['id']"
-      @click="selectQuery(query)"
-    >
-      <QueryDetails
-        :query="query"
-        :selected-query="selectedQuery"
-      />
+    <div class="query-list-container scrollbar">
+      <div
+        v-for="query in queries"
+        :id="`query-${query['id']}`"
+        :key="query['id']"
+        @click="selectQuery(query)"
+      >
+        <QueryDetails
+          :query="query"
+          :selected-query="selectedQuery"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -47,8 +49,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.__title{
+.__title {
   font-size: 16px;
   font-weight: bold;
+}
+
+.query-list-container {
+  max-height: 30vh;
+  overflow-y: auto;
 }
 </style>
