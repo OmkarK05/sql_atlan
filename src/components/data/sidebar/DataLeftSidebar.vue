@@ -4,6 +4,9 @@
       Atlan
     </div>
     <div class="queries-container">
+      <div class="__title font-medium mb-2">
+        Select Table
+      </div>
       <v-select
         id="data-selection"
         v-model="selectedDataset"
@@ -18,17 +21,26 @@
         class="__select-dataset"
         @change="datasetChanged"
       />
-      <QueryList :queries="getQueries" />
+      <template v-if="!! selectedDataset">
+        <QueryList
+          :queries="getQueries"
+          class="mb-4"
+        />
+        <ColumnsList
+          class="mb-4"
+        />
+      </template>
     </div>
   </div>
 </template>
 <script>
 import { mapActions } from "vuex";
+import ColumnsList from "../common/ColumnsList.vue";
 import QueryList from "../query/QueryList.vue";
 
 export default {
   name: "QuerySidebar",
-  components: { QueryList },
+  components: { QueryList, ColumnsList },
   props: {
     tabs: {
       type: Array,
@@ -85,6 +97,13 @@ export default {
     color: rgba(var(--secondary), 1);
     text-align: left;
     margin-bottom: 20px;
+  }
+
+  .queries-container{
+    .__title{
+      font-size: 16px;
+      font-weight: bold;
+    }
   }
 }
 </style>
