@@ -24,10 +24,10 @@
       <template v-if="!! selectedDataset">
         <QueryList
           :queries="getQueries"
-          class="mb-4"
+          class="py-3 __query-list"
         />
         <ColumnsList
-          class="mb-4"
+          class="py-3 __columns-list"
         />
       </template>
     </div>
@@ -104,6 +104,10 @@ export default {
       font-size: 16px;
       font-weight: bold;
     }
+  }
+
+  .__select-dataset, .__query-list, .__columns-list{
+    border-bottom: 1px solid #e1e1e1;
   }
 }
 </style>

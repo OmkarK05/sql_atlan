@@ -1,15 +1,15 @@
 <template>
   <div>
-    <div class="__title font-medium pb-1">
+    <div class="__title font-medium pb-2">
       Columns
     </div>
     <div class="columns-container scrollbar">
       <div
         v-for="columnSection in getColumnSections"
         :key="columnSection['name']"
-        class="column-section-container scrollbar px-2 pb-1"
+        class="column-section-container scrollbar px-2"
       >
-        <div class="__title font-medium">
+        <div class="font-medium">
           {{ columnSection["label"] }}
         </div>
         <div class="columns">
@@ -21,8 +21,9 @@
             <SvgLoader
               width="20"
               height="20"
-              :icon-name="columnIconMapping[column['data_type']]"
+              :icon-name="column['data_type']"
               class="__column-icon mr-1"
+              color="#676666"
             >
               <component :is="columnIconMapping[column['data_type']]" />
               />
@@ -88,6 +89,7 @@ export default {
       display: flex;
       align-items: center;
       padding: 4px 8px;
+      color: #676666;
     }
   }
 }
