@@ -269,7 +269,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .table-container {
-  height: calc(100% - 40px);
+  max-height: calc(100% - 40px);
   overflow: auto;
 }
 .app-table {
