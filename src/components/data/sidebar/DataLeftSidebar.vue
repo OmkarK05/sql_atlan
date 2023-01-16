@@ -106,8 +106,8 @@ export default {
     }
   }
 
-  .__select-dataset, .__query-list, .__columns-list{
-    border-bottom: 1px solid #e1e1e1;
+  .__query-list, .__columns-list{
+    border-top: 1px solid #e1e1e1;
   }
 }
 </style>
