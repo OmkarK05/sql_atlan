@@ -30,8 +30,8 @@
           <QueryPreview
             :card="queryCardData"
             :visualization="activeVisualization"
-            :show-loading="!! showCardLoader.length"
-            :selected-dataset="selectedDataset"
+            :show-loading="!!showCardLoader.length"
+            :selected-dataset="selectedData"
             class="__query-card"
             @columns-updated="updateVisualization"
             @visualization-changed="updateVisualization"
@@ -48,12 +48,19 @@ import { ChartMixin } from "@/mixins/chart/chartMixin";
 import { mapGetters } from "vuex";
 import DataToolbar from "../preview/DataToolbar.vue";
 import SvgLoader from "@/components/helpers/SvgLoader.vue";
-import CodeSvg from '../../svgs/CodeSvg.vue'
-const QueryPreview = () => import('./QueryPreview.vue');
+import CodeSvg from "../../svgs/CodeSvg.vue";
+const QueryPreview = () => import("./QueryPreview.vue");
 
 export default {
   name: "AppQuery",
-  components: { QueryInput, QueryPreview, DataLeftSidebar, DataToolbar, SvgLoader, CodeSvg },
+  components: {
+    QueryInput,
+    QueryPreview,
+    DataLeftSidebar,
+    DataToolbar,
+    SvgLoader,
+    CodeSvg,
+  },
   mixins: [ChartMixin],
   data: function () {
     return {
@@ -95,10 +102,10 @@ export default {
               data_id: 11,
             },
           ],
-        }
+        },
       },
       queryCardData: null,
-      selectedData: null,
+      selectedQueryData: null,
       activeVisualization: { label: "Table", name: "table", type: "table" },
       showCardLoader: [],
       dataSets: [
@@ -165,8 +172,8 @@ export default {
           description: "This table contains data related to food orders",
           row_count: 830,
           column_count: 8,
-          created: 'Sat Jan 7 2023 10:38:20',
-          modified: 'Tue Jan 10 2023 11:38:20',
+          created: "Sat Jan 7 2023 10:38:20",
+          modified: "Tue Jan 10 2023 11:38:20",
           data_source: {
             name: "Sample Food Data",
             id: 1,
@@ -176,7 +183,7 @@ export default {
               id: 2,
               email: "omkesarkhane@gmail.com",
             },
-          }
+          },
         },
         {
           name: "products",
@@ -214,11 +221,12 @@ export default {
             date: [],
           },
           format: "json",
-          description: "This table contains data related to food products available",
+          description:
+            "This table contains data related to food products available",
           row_count: 420,
           column_count: 4,
-          created: 'Sun Jan 7 2023 17:38:20',
-          modified: 'Sun Jan 8 2023 17:38:20',
+          created: "Sun Jan 7 2023 17:38:20",
+          modified: "Sun Jan 8 2023 17:38:20",
           data_source: {
             name: "Sample Food Data",
             id: 1,
@@ -228,24 +236,17 @@ export default {
               id: 2,
               email: "omkesarkhane@gmail.com",
             },
-          }
+          },
         },
       ],
     };
   },
   computed: {
     ...mapGetters({
-      selectedDataset: 'data/getSelectedData'
+      selectedData: "data/getSelectedData",
     }),
-    getQueries: function () {
-      return this.queries.map((query) => query["label"]);
-    },
-    getSelectedQueryCsv: function () {
-      return this.queries.find(
-        (query) => query["label"] === this.selectedQuery
-      )["name"];
-    },
   },
+
   methods: {
     /**
      * Method to get json data for selected query
@@ -254,49 +255,41 @@ export default {
     loadQueryResult: function (query = null) {
       this.showCardLoader.push(true);
       this.queryCardData = null;
-      this.selectedData = this.getData(query);
-      this.getQueryCard(query);
-      setTimeout(() => this.showCardLoader.pop(), 1000);
+      this.selectedQueryData = this.getQueryData(query);
+      this.setQueryCard(query);
+      setTimeout(() => this.showCardLoader.pop(), 500);
     },
 
     /**
      * Getting json data using require from /assets/json/
      * @param {String} dataName - data file name
      */
-    getData: function (query) {
+     getQueryData: function (query) {
       let queryData;
       try {
         let data = require(`../../../assets/json/queryResult.json`);
-        queryData = data[query['data_id']]['queries'].find((__query) => __query["id"] === query["id"])['data'];
+        queryData = data[query["data_id"]]["queries"].find(
+          (__query) => __query["id"] === query["id"]
+        )["data"];
       } catch (error) {
         console.log(error);
       }
-      console.log(queryData);
       return queryData;
     },
 
     /**
-     * Method to get query result standard card object
+     * Method to set query result standard card object
      * @param {Object} query - selected query
      */
-    getQueryCard: function (query) {
-      let card = {
-        uuid: this.getUUID(),
-        query: this.deepCopy(query),
-        data: { chart: null, table: null, json: "" },
-        filters: [],
-      };
+    setQueryCard: function (query) {
+      let card = this.getDefaultQueryCard(query);
 
-      card["data"]["json"] = this.selectedData;
-
-      if (this.activeVisualization["type"] === "chart") {
-        card["data"]["chart"] = this.getChartData(
-          this.activeVisualization["name"],
-          this.selectedDataset['columns']
-        );
-      } else {
-        card["data"]["table"] = this.getTableData(this.selectedDataset['columns']);
-      }
+      this.setCardVisualizations({
+        card,
+        chartType: this.activeVisualization["name"],
+        visualization: this.activeVisualization["type"],
+        columns: this.selectedData["columns"],
+      });
 
       this.queryCardData = this.deepCopy(card);
     },
@@ -307,17 +300,48 @@ export default {
      * @param {Object} columns - columns object containing dimensions and measures {dimensions: [], measures: []}
      */
     getTableData: function (columns) {
-
-      let headers = [...columns["dimensions"], ...columns['measures']];
-      
-      let body = this.selectedData.map((row) => ({
-        cells: headers.map((header) => ({ name: header['name'], value: row[header['name']], styles: {} }))
-      }))
-
-      return {
-        headers,
-        body,
+      const data = this.deepCopy(this.selectedQueryData);
+      const table = {
+        headers: [],
+        body: [],
         uuid: this.getUUID(),
+      };
+
+      table["headers"] = [...columns["dimensions"], ...columns["measures"]];
+
+      table["body"] = this.getTableBody(data, table["headers"]);
+
+      return table;
+    },
+
+    /**
+     * This method returns table body array
+     * @param {Array} data - selected data
+     */
+    getTableBody: function (data, headers) {
+      const body = data.map(() => ({
+        cells: [],
+      }));
+
+      body.forEach((row, index) => {
+        headers.forEach((header) => {
+          row["cells"].push(this.getTableCell(data[index], header));
+        });
+      });
+
+      return body;
+    },
+
+    /**
+     * This method returns table cell structure object
+     * @param {Object} cellData - data row
+     * @param {Object} header - table header
+     */
+    getTableCell: function (cellData, header) {
+      return {
+        name: header["name"],
+        value: cellData[header["name"]],
+        style: {},
       };
     },
 
@@ -328,16 +352,17 @@ export default {
      */
     updateVisualization: function (visualization, columns) {
       this.showCardLoader.push(true);
+
       this.activeVisualization = this.deepCopy(visualization);
-      if (visualization["type"] === "chart") {
-        this.queryCardData["data"]["chart"] = this.getChartData(
-          visualization["name"],
-          columns
-        );
-      } else {
-        this.queryCardData["data"]["table"] = this.getTableData(columns);
-      }
-      setTimeout(() => this.showCardLoader.pop(), 1000);
+
+      this.setCardVisualizations({
+        card: this.queryCardData,
+        chartType: this.activeVisualization["name"],
+        visualization: this.activeVisualization["type"],
+        columns,
+      });
+
+      setTimeout(() => this.showCardLoader.pop(), 500);
     },
 
     /**
@@ -349,17 +374,51 @@ export default {
       const visualizationMapping = {
         bar: this.getBarChart,
         line: this.getLineChart,
-        "horizontal-bar": this.getHorizontalBarChart,
+        'horizontal-bar': this.getHorizontalBarChart,
       };
 
       if (visualizationMapping[chartType]) {
-        return visualizationMapping[chartType](
-          this.getAxisBaseChart(),
-          this.selectedData,
-          columns
-        );
+        return visualizationMapping[chartType]({
+          chart: this.getAxisBaseChart(),
+          data: this.selectedQueryData,
+          columns,
+        });
       }
       return null;
+    },
+
+    /**
+     * Method to get default query card
+     * @param {Object} query 
+     */
+    getDefaultQueryCard: function (query = null) {
+      return {
+        uuid: this.getUUID(),
+        query: this.deepCopy(query),
+        data: { chart: null, table: null },
+        filters: [],
+      };
+    },
+
+    /**
+     * This method sets chart and table in card that is sent in params
+     * @param {Object} card 
+     * @param {Object} chartType
+     * @param {Object} columns
+     * @param {Object} visualization
+     */
+    setCardVisualizations: function ({
+      card,
+      chartType,
+      columns,
+      visualization,
+    }) {
+      switch (visualization) {
+        case "chart":
+          card["data"]["chart"] = this.getChartData(chartType, columns);
+        case "table":
+          card["data"]["table"] = this.getTableData(columns);
+      }
     },
   },
 };
@@ -381,13 +440,15 @@ export default {
       overflow-y: auto;
       overflow-x: hidden;
 
-      .__header{
+      .__header {
         display: flex;
         align-items: center;
       }
 
       .__query-card {
-        height: calc(100vh - 285px); // 100vh minus (query Input height  + data toolbar height)
+        height: calc(
+          100vh - 285px
+        ); // 100vh minus (query Input height  + data toolbar height)
       }
     }
   }

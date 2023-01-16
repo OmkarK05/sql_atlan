@@ -7,10 +7,14 @@ export const ChartMixin = {
      * @param {Object} columns - columns object containing dimensions and measures {dimensions: [], measures: []}
      * @returns
      */
-    getHorizontalBarChart: function (chart = null, data, columns) {
+    getHorizontalBarChart: function ({ chart = null, data, columns }) {
       let chartData = chart ? chart : this.getAxisBaseChart();
-      chartData["series"] = this.getSeriesData(data, columns, "bar");
-      chartData["yAxis"] = this.getAxisData(data, columns);
+      chartData["series"] = this.getSeriesData({
+        data,
+        columns,
+        chartType: "bar",
+      });
+      chartData["yAxis"] = this.getAxisData({ data, columns });
       chartData["xAxis"] = { type: "value" };
       chartData["legend"]["data"] = chartData["series"].map(
         (__series) => __series["name"]
@@ -25,10 +29,14 @@ export const ChartMixin = {
      * @param {Object} columns
      * @returns
      */
-    getBarChart: function (chart = null, data, columns) {
+    getBarChart: function ({ chart = null, data, columns }) {
       let chartData = chart ? chart : this.getAxisBaseChart();
-      chartData["series"] = this.getSeriesData(data, columns, "bar");
-      chartData["xAxis"] = this.getAxisData(data, columns);
+      chartData["series"] = this.getSeriesData({
+        data,
+        columns,
+        chartType: "bar",
+      });
+      chartData["xAxis"] = this.getAxisData({ data, columns });
       chartData["yAxis"] = { type: "value" };
       chartData["legend"]["data"] = chartData["series"].map(
         (__series) => __series["name"]
@@ -43,10 +51,14 @@ export const ChartMixin = {
      * @param {Object} columns
      * @returns
      */
-    getLineChart: function (chart = null, data, columns) {
+    getLineChart: function ({ chart = null, data, columns }) {
       let chartData = chart ? chart : this.getAxisBaseChart();
-      chartData["series"] = this.getSeriesData(data, columns, "line");
-      chartData["xAxis"] = this.getAxisData(data, columns);
+      chartData["series"] = this.getSeriesData({
+        data,
+        columns,
+        chartType: "line",
+      });
+      chartData["xAxis"] = this.getAxisData({ data, columns });
       chartData["yAxis"] = { type: "value" };
       chartData["legend"]["data"] = chartData["series"].map(
         (__series) => __series["name"]
@@ -96,7 +108,7 @@ export const ChartMixin = {
      * @param {String} chartType - type of chart 'line' or 'bar'
      * @returns
      */
-    getSeriesData: function (data, columns, chartType) {
+    getSeriesData: function ({ data, columns, chartType }) {
       let seriesDataMapping = {};
       // Populating seriesDataMapping with key as measure name and value as series object
       columns["measures"].forEach((measure) => {
@@ -130,12 +142,14 @@ export const ChartMixin = {
      * @param {*} columns
      * @returns
      */
-    getAxisData: function (data, columns) {
+    getAxisData: function ({ data, columns }) {
       let dimensionAxis = {
         type: "category",
         boundaryGap: false,
         data: [],
-        name: columns["dimensions"][0]["name"],
+        name: columns["dimensions"].length
+          ? columns["dimensions"][0]["name"]
+          : "",
       };
 
       data.forEach((row) =>
