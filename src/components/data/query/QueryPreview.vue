@@ -172,7 +172,6 @@ export default {
      */
     downloadTableData: function () {
       let fields = [...this.selectedDimensions, ...this.selectedMeasures].map((column) => column['name']);
-      console.log(this.card['data']['json'], fields);
       const csv = parse(this.card['data']['json'], { fields });
 
       const blob = new Blob([csv], { type: 'text/csv' });
