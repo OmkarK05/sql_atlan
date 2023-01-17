@@ -94,7 +94,7 @@
           class="table-body"
         >
           <tr
-            v-for="(row, index) in paginatedRows"
+            v-for="(row, index) in getRows"
             id="table-body-row"
             :key="`table-body-row-${index}`"
             class="table-body-row"
@@ -137,14 +137,9 @@ export default {
       type: Object,
       default: null,
     },
-    pagination: {
-      type: Boolean,
-      default: false,
-    },
   },
   data: function () {
     return {
-      paginatedRows: null,
       tableData: null,
       currentPage: 1,
       columnIconMapping: {
@@ -156,8 +151,13 @@ export default {
         numeric: "Measure",
       },
       searchKeyword: "",
-      debounceTime: null
+      debounceTime: null,
     };
+  },
+  computed: {
+    getRows : function () {
+      return this.tableData['body']
+    }
   },
   watch: {
     table: function () {
@@ -176,22 +176,6 @@ export default {
      */
     setupTable: function () {
       this.tableData = this.deepCopy(this.table);
-      if (this.table && this.table.body) {
-        this.paginatedRows = this.getPaginatedRows(
-          this.tableData["body"],
-          this.currentPage
-        );
-      }
-    },
-
-    /**
-     * Method to get paginated table body rows.
-     * @param {Array rows - Array of table rows
-     * @param {Number} pageNumber - current page number
-     */
-    getPaginatedRows: function (rows, pageNumber) {
-      if (!this.pagination) return rows;
-      return rows.slice((pageNumber - 1) * 7, pageNumber * 7);
     },
 
     /**
@@ -200,34 +184,38 @@ export default {
      * @param {Number} headerIndex - index of header
      */
     sortTable: function (sortBy, headerIndex) {
-      const updateTable = this.deepCopy(this.table.body).sort((a, b) => {
-        if (
-          typeof a["cells"][headerIndex]["value"] === "number" &&
-          typeof b["cells"][headerIndex]["value"] === "number"
-        ) {
-          if (sortBy === "ascending")
-            return (
-              a["cells"][headerIndex]["value"] -
-              b["cells"][headerIndex]["value"]
-            );
-          if (sortBy === "descending")
-            return (
-              b["cells"][headerIndex]["value"] -
-              a["cells"][headerIndex]["value"]
-            );
-        } else {
-          if (sortBy === "ascending")
-            return a["cells"][headerIndex]["value"].localeCompare(
-              b["cells"][headerIndex]["value"]
-            );
-          if (sortBy === "descending")
-            return b["cells"][headerIndex]["value"].localeCompare(
-              a["cells"][headerIndex]["value"]
-            );
-        }
+      const updateTable = this.deepCopy(this.table.body).sort((row, __row) => {
+
+        const firstCellValue = row["cells"][headerIndex]["value"];
+        const secondCellValue = __row["cells"][headerIndex]["value"];
+
+        if(sortBy === 'ascending') return this.sortValuesAscending(firstCellValue, secondCellValue);
+        if(sortBy === 'descending') return this.sortValuesDescending(firstCellValue, secondCellValue);
       });
+
       this.tableData["body"] = this.deepCopy(updateTable);
-      this.paginatedRows = this.getPaginatedRows(updateTable, this.currentPage);
+    },
+
+    sortValuesAscending: function (firstValue, secondValue) {
+      if (
+        typeof firstValue === "number" &&
+        typeof secondValue === "number"
+      ) {
+        return firstValue - secondValue;
+      } else {
+        return firstValue.localeCompare(secondValue);
+      }
+    },
+
+    sortValuesDescending: function (firstValue, secondValue) {
+      if (
+        typeof firstValue === "number" &&
+        typeof secondValue === "number"
+      ) {
+        return secondValue - firstValue;
+      } else {
+        return secondValue.localeCompare(firstValue);
+      }
     },
 
     debounce: function (callback, delay) {
@@ -241,21 +229,15 @@ export default {
 
     handleSearchKeyword: function () {
       const keyword = this.searchKeyword && this.searchKeyword.toString().trim().toLowerCase();
-      let filteredRows = [];
       if (keyword) {
-        filteredRows = this.table['body'].filter((row) =>
+        this.tableData["body"] = this.deepCopy(this.table["body"].filter((row) =>
           row["cells"].some((cell) =>
             cell["value"].toString().toLowerCase().includes(keyword)
           )
-        );
+        ));
       } else {
-        filteredRows = this.table['body'];
+        this.tableData["body"] = this.deepCopy(this.table["body"]);
       }
-
-      this.paginatedRows = this.getPaginatedRows(
-        filteredRows,
-        this.currentPage
-      );
     },
 
     /**
@@ -366,6 +348,16 @@ export default {
       width: 20px;
       height: 20px;
       cursor: pointer;
+    }
+  }
+
+  .pagination-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    .__prev-btn {
+      transform: rotate(90deg);
     }
   }
 }
