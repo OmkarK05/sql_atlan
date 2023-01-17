@@ -291,6 +291,8 @@ export default {
         columns: this.selectedData["columns"],
       });
 
+      card['data']['json'] = this.deepCopy(this.selectedQueryData);
+
       this.queryCardData = this.deepCopy(card);
     },
 

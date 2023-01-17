@@ -59,7 +59,7 @@
       <component
         :is="getVisualization[activeVisualization['type']]"
         v-bind="getProps"
-        @download="downloadTableData[activeVisualization['type']]"
+        @download="downloadTableData"
       />
     </div>
   </div>
@@ -171,7 +171,8 @@ export default {
      * Method is called to download csv file of table data
      */
     downloadTableData: function () {
-      let fields = [...this.selectedDimensions, ...this.selectedMeasures];
+      let fields = [...this.selectedDimensions, ...this.selectedMeasures].map((column) => column['name']);
+      console.log(this.card['data']['json'], fields);
       const csv = parse(this.card['data']['json'], { fields });
 
       const blob = new Blob([csv], { type: 'text/csv' });
