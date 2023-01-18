@@ -72,7 +72,7 @@ import AppLoader from "../../helpers/AppLoader.vue";
 const AppEcharts = () => import('../../helpers/AppEcharts.vue');
 
 export default {
-  name: "QueryCard",
+  name: "QueryPreview",
   components: { AppEcharts, DataTable, AppLoader },
   props: {
     card: {

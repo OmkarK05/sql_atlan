@@ -123,7 +123,7 @@ import MeasureSvg from "../../svgs/MeasureSvg.vue";
 import DimensionSvg from "../../svgs/DimensionSvg.vue";
 
 export default {
-  name: "AppTable",
+  name: "DataTable",
   components: {
     CaretDown,
     CaretUp,

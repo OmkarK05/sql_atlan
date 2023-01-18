@@ -52,7 +52,7 @@ import CodeSvg from "../../svgs/CodeSvg.vue";
 const QueryPreview = () => import("./QueryPreview.vue");
 
 export default {
-  name: "AppQuery",
+  name: "DataQuery",
   components: {
     QueryInput,
     QueryPreview,
