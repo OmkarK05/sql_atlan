@@ -114,9 +114,5 @@ Follow below steps to setup up project locally
    ```
 4. To run unit tests
    ```sh
-   npm test
-   ```
-5. To run Cypress in browser
-   ```sh
-   npx cypress open
+   npm run test:unit
    ```
