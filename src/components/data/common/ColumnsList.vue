@@ -73,7 +73,7 @@ export default {
     },
   },
 };
-</script>d
+</script>
 
 <style lang="scss" scoped>
 .__title {
