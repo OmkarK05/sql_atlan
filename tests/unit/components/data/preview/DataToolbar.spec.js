@@ -83,10 +83,16 @@ describe("Data Toolbar", () => {
   let store = createStore(["data"]);
   store.commit("data/SET_DATA", dataset);
 
-  wrapper = mount(DataToolbar, {
-    localVue,
-    vuetify,
-    store,
+  beforeEach(() => {
+    wrapper = mount(DataToolbar, {
+      localVue,
+      vuetify,
+      store,
+    });
+  });
+
+  afterEach(() => {
+    wrapper.destroy();
   });
 
   it("checks if table icon is rendered", () => {

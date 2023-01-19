@@ -5,7 +5,7 @@ import { localVue, vuetify } from "../../../../main.js";
 let table = {
   headers: [
     { name: "city", column_id: 6, label: "city", data_type: "text" },
-    { name: "city", column_id: 7, label: "city", data_type: "text" },
+    { name: "region", column_id: 7, label: "region", data_type: "text" },
     { name: "country", column_id: 8, label: "country", data_type: "text" },
     { name: "orderID", column_id: 1, label: "orderID", data_type: "numeric" },
     { name: "freight", column_id: 2, label: "freight", data_type: "numeric" },
@@ -49,12 +49,18 @@ let table = {
 describe("Data Toolbar", () => {
   let wrapper;
 
-  wrapper = mount(DataTable, {
-    propsData: {
-      table,
-    },
-    localVue,
-    vuetify,
+  beforeEach(() => {
+    wrapper = mount(DataTable, {
+      propsData: {
+        table,
+      },
+      localVue,
+      vuetify,
+    });
+  });
+
+  afterEach(() => {
+    wrapper.destroy();
   });
 
   it("checks if table is mounted", () => {

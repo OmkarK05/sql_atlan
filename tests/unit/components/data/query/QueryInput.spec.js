@@ -5,9 +5,15 @@ import { localVue, vuetify } from "../../../../main.js";
 describe("Data Toolbar", () => {
   let wrapper;
 
-  wrapper = mount(QueryInput, {
-    localVue,
-    vuetify,
+  beforeEach(() => {
+    wrapper = mount(QueryInput, {
+      localVue,
+      vuetify,
+    });
+  });
+
+  afterEach(() => {
+    wrapper.destroy();
   });
 
   it("checks if text area is rendered", () => {

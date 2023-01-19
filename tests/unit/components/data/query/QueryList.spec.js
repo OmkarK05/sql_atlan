@@ -27,10 +27,16 @@ const propsData = {
 describe("Data Toolbar", () => {
   let wrapper;
 
-  wrapper = mount(QueryList, {
-    propsData,
-    localVue,
-    vuetify,
+  beforeEach(() => {
+    wrapper = mount(QueryList, {
+      propsData,
+      localVue,
+      vuetify,
+    });
+  });
+
+  afterEach(() => {
+    wrapper.destroy();
   });
 
   it("checks if title is rendered", () => {

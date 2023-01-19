@@ -19,10 +19,16 @@ const propsData = {
 describe("Data Toolbar", () => {
   let wrapper;
 
-  wrapper = mount(QueryDetails, {
-    propsData,
-    localVue,
-    vuetify,
+  beforeEach(() => {
+    wrapper = mount(QueryDetails, {
+      propsData,
+      localVue,
+      vuetify,
+    });
+  });
+
+  afterEach(() => {
+    wrapper.destroy();
   });
 
   it("checks if mounted", () => {
