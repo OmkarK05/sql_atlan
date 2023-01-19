@@ -1,6 +1,9 @@
 <template>
-  <div>
-    <div class="__title font-medium pb-2">
+  <div class="columns-list-container">
+    <div
+      id="columns-title"
+      class="__title font-medium pb-2"
+    >
       Columns
     </div>
     <div class="columns-container scrollbar">
@@ -9,12 +12,16 @@
         :key="columnSection['name']"
         class="column-section-container scrollbar px-2"
       >
-        <div class="font-medium">
+        <div
+          :id="`column-section-${columnSection['name']}-title`"
+          class="font-medium"
+        >
           {{ columnSection["label"] }}
         </div>
         <div class="columns">
           <div
             v-for="column in columnSection['columns']"
+            :id="`column-${columnSection['name']}-${column['name']}`"
             :key="column['id']"
             class="column-block font-medium"
           >
