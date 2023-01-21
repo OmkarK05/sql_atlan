@@ -282,18 +282,18 @@ export default {
      * @param {Object} query - selected query
      */
     setQueryCard: function (query) {
-      let card = this.getDefaultQueryCard(query);
+      let previewData = this.getDefaultQueryCard(query);
 
       this.setCardVisualizations({
-        card,
+        previewData,
         chartType: this.activeVisualization["name"],
         visualization: this.activeVisualization["type"],
         columns: this.selectedData["columns"],
       });
 
-      card['data']['json'] = this.deepCopy(this.selectedQueryData);
+      previewData['data']['json'] = this.deepCopy(this.selectedQueryData);
 
-      this.queryPreviewData = this.deepCopy(card);
+      this.queryPreviewData = this.deepCopy(previewData);
     },
 
     /**
@@ -358,7 +358,7 @@ export default {
       this.activeVisualization = this.deepCopy(visualization);
 
       this.setCardVisualizations({
-        card: this.queryPreviewData,
+        previewData: this.queryPreviewData,
         chartType: this.activeVisualization["name"],
         visualization: this.activeVisualization["type"],
         columns,
@@ -410,16 +410,16 @@ export default {
      * @param {Object} visualization
      */
     setCardVisualizations: function ({
-      card,
+      previewData,
       chartType,
       columns,
       visualization,
     }) {
       switch (visualization) {
         case "chart":
-          card["data"]["chart"] = this.getChartData(chartType, columns);
+          previewData["data"]["chart"] = this.getChartData(chartType, columns);
         case "table":
-          card["data"]["table"] = this.getTableData(columns);
+          previewData["data"]["table"] = this.getTableData(columns);
       }
     },
   },
