@@ -21,7 +21,7 @@
           return-object
           multiple
           class="__select-dimension"
-          @change="columnsUpdated"
+          @change="updateColumns"
         />
         <v-select
           id="query-card-dimensions-select-input"
@@ -35,7 +35,7 @@
           return-object
           multiple
           class="__select-measure"
-          @change="columnsUpdated"
+          @change="updateColumns"
         />
       </div>
       <div>
@@ -149,7 +149,7 @@ export default {
      * Method is called when dimension / measure columns are changed.
      * This method emits "columns-updated" with columns {measures: [], dimensions: []} object
      */
-    columnsUpdated: function () {
+     updateColumns: function () {
       this.$emit("columns-updated", this.activeVisualization, {
         dimensions: this.selectedDimensions,
         measures: this.selectedMeasures,
