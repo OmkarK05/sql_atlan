@@ -92,7 +92,10 @@ export const ChartMixin = {
         },
         toolbox: {
           feature: {
-            saveAsImage: {},
+            saveAsImage: {
+              type: "png",
+              title: "Download",
+            },
           },
         },
         xAxis: {},
