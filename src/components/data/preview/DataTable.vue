@@ -5,7 +5,7 @@
   >
     <div class="__table-toolbar">
       <div class="__left-side-actions ml-2">
-        <div>Total Row count: {{ table["body"].length }}</div>
+        <div>Rows: {{ table["body"].length }}</div>
         <v-text-field
           v-model="searchKeyword"
           hide-details
