@@ -38,9 +38,9 @@ module.exports = {
       ],
       dimensions: [
         {
-          name: "city",
+          name: "region",
           column_id: 6,
-          label: "city",
+          label: "region",
           data_type: "text",
         },
         {
