@@ -21,7 +21,7 @@
           return-object
           multiple
           class="__select-dimension"
-          @change="updateColumns"
+          @change="updateVisualization"
         />
         <v-select
           id="query-card-dimensions-select-input"
@@ -35,7 +35,7 @@
           return-object
           multiple
           class="__select-measure"
-          @change="updateColumns"
+          @change="updateVisualization"
         />
       </div>
       <div>
@@ -118,7 +118,7 @@ export default {
       return this.selectedDataset && this.selectedDataset['columns']['measures']
     },
     showTable: function () {
-      return activeVisualization['type'] === 'table' && previewData && previewData['data']
+      return activeVisualization['type'] === 'table' && previewData && card['data']
     },
     getProps: function () {
       return {
@@ -146,22 +146,11 @@ export default {
   },
   methods: {
     /**
-     * Method is called when dimension / measure columns are changed.
-     * This method emits "columns-updated" with columns {measures: [], dimensions: []} object
-     */
-     updateColumns: function () {
-      this.$emit("columns-updated", this.activeVisualization, {
-        dimensions: this.selectedDimensions,
-        measures: this.selectedMeasures,
-      });
-    },
-    
-    /**
-     * Method is called when visualization is changed.
-     * This method emits "visualization-changed" with changed visualization and columns {measures: [], dimensions: []} object
+     * Method is called when visualization or dimension / measure columns are changed.
+     * This method emits "update-visualization" with current visualization and columns {measures: [], dimensions: []} object
      */
      updateVisualization: function () {
-      this.$emit("visualization-changed", this.activeVisualization, {
+      this.$emit("update-visualization", this.activeVisualization, {
         dimensions: this.selectedDimensions,
         measures: this.selectedMeasures,
       });

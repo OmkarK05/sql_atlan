@@ -33,8 +33,7 @@
             :show-loading="!!showCardLoader.length"
             :selected-dataset="selectedData"
             class="__query-card"
-            @columns-updated="updateVisualization"
-            @visualization-changed="updateVisualization"
+            @update-visualization="updateVisualization"
           />
         </template>
       </div>
