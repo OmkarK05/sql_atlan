@@ -26,9 +26,9 @@
           class="__query-input"
           @run-query="loadQueryResult"
         />
-        <template v-if="queryCardData">
+        <template v-if="queryPreviewData">
           <QueryPreview
-            :card="queryCardData"
+            :preview-data="queryPreviewData"
             :visualization="activeVisualization"
             :show-loading="!!showCardLoader.length"
             :selected-dataset="selectedData"
@@ -104,7 +104,7 @@ export default {
           ],
         },
       },
-      queryCardData: null,
+      queryPreviewData: null,
       selectedQueryData: null,
       activeVisualization: { label: "Table", name: "table", type: "table" },
       showCardLoader: [],
@@ -254,7 +254,7 @@ export default {
      */
     loadQueryResult: function (query = null) {
       this.showCardLoader.push(true);
-      this.queryCardData = null;
+      this.queryPreviewData = null;
       this.selectedQueryData = this.getQueryData(query);
       this.setQueryCard(query);
       setTimeout(() => this.showCardLoader.pop(), 500);
@@ -293,7 +293,7 @@ export default {
 
       card['data']['json'] = this.deepCopy(this.selectedQueryData);
 
-      this.queryCardData = this.deepCopy(card);
+      this.queryPreviewData = this.deepCopy(card);
     },
 
     /**
@@ -358,7 +358,7 @@ export default {
       this.activeVisualization = this.deepCopy(visualization);
 
       this.setCardVisualizations({
-        card: this.queryCardData,
+        card: this.queryPreviewData,
         chartType: this.activeVisualization["name"],
         visualization: this.activeVisualization["type"],
         columns,

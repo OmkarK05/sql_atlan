@@ -75,7 +75,7 @@ export default {
   name: "QueryPreview",
   components: { AppEcharts, DataTable, AppLoader },
   props: {
-    card: {
+    previewData: {
       type: Object,
       default: null,
     },
@@ -118,12 +118,12 @@ export default {
       return this.selectedDataset && this.selectedDataset['columns']['measures']
     },
     showTable: function () {
-      return activeVisualization['type'] === 'table' && card && card['data']
+      return activeVisualization['type'] === 'table' && previewData && previewData['data']
     },
     getProps: function () {
       return {
-        'chart': this.card['data']['chart'],
-        'table': this.card['data']['table']
+        'chart': this.previewData['data']['chart'],
+        'table': this.previewData['data']['table']
       }
     },
   },
@@ -172,7 +172,7 @@ export default {
      */
     downloadTableData: function () {
       let fields = [...this.selectedDimensions, ...this.selectedMeasures].map((column) => column['name']);
-      const csv = parse(this.card['data']['json'], { fields });
+      const csv = parse(this.previewData['data']['json'], { fields });
 
       const blob = new Blob([csv], { type: 'text/csv' });
  
