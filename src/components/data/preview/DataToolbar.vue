@@ -108,7 +108,7 @@ export default {
 
 <style lang="scss" scoped>
 .data-toolbar-container{
-    padding: 5px;
+    padding: 5px 8px;
     border: 1px solid #e1e1e1;
     border-radius: 4px;
     .__table-icon{
