@@ -189,14 +189,14 @@ export default {
         const firstCellValue = row["cells"][headerIndex]["value"];
         const secondCellValue = __row["cells"][headerIndex]["value"];
 
-        if(sortBy === 'ascending') return this.sortValuesAscending(firstCellValue, secondCellValue);
-        if(sortBy === 'descending') return this.sortValuesDescending(firstCellValue, secondCellValue);
+        if(sortBy === 'ascending') return this.compareValues(firstCellValue, secondCellValue);
+        if(sortBy === 'descending') return this.compareValues(secondCellValue, firstCellValue);
       });
 
       this.tableData["body"] = this.deepCopy(updateTable);
     },
 
-    sortValuesAscending: function (firstValue, secondValue) {
+    compareValues: function (firstValue, secondValue) {
       if (
         typeof firstValue === "number" &&
         typeof secondValue === "number"
@@ -204,17 +204,6 @@ export default {
         return firstValue - secondValue;
       } else {
         return firstValue.localeCompare(secondValue);
-      }
-    },
-
-    sortValuesDescending: function (firstValue, secondValue) {
-      if (
-        typeof firstValue === "number" &&
-        typeof secondValue === "number"
-      ) {
-        return secondValue - firstValue;
-      } else {
-        return secondValue.localeCompare(firstValue);
       }
     },
 
