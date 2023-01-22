@@ -16,5 +16,8 @@ export const globalMixin = {
       );
       return uuid;
     },
+    emitEvent: function (action, payload) {
+      this.$emit("event-emitted", action, payload);
+    },
   },
 };

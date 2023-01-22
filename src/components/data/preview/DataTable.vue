@@ -3,30 +3,10 @@
     v-if="tableData"
     class="app-table"
   >
-    <div class="__table-toolbar">
-      <div class="__left-side-actions ml-2">
-        <div>Rows: {{ table["body"].length }}</div>
-        <v-text-field
-          v-model="searchKeyword"
-          hide-details
-          prepend-icon="mdi-magnify"
-          single-line
-          placeholder="Search in table"
-          class="__search-box"
-        />
-      </div>
-      <div class="__right-side-actions">
-        <SvgLoader
-          width="20"
-          height="20"
-          icon-name="Download"
-          class="mr-4"
-          @click.native="downloadTable"
-        >
-          <DownloadSvg />
-        </SvgLoader>
-      </div>
-    </div>
+    <DataTableToolbar
+      :row-count="table['body'].length"
+      @event-emitted="handleToolbarEvent"
+    />
     <div class="table-container">
       <table
         id="data-table"
@@ -121,6 +101,7 @@ import CaretDown from "../../svgs/CaretDown.vue";
 import DownloadSvg from "../../svgs/DownloadSvg.vue";
 import MeasureSvg from "../../svgs/MeasureSvg.vue";
 import DimensionSvg from "../../svgs/DimensionSvg.vue";
+import DataTableToolbar from "./DataTableToolbar.vue";
 
 export default {
   name: "DataTable",
@@ -131,6 +112,7 @@ export default {
     DownloadSvg,
     MeasureSvg,
     DimensionSvg,
+    DataTableToolbar,
   },
   props: {
     table: {
@@ -151,21 +133,17 @@ export default {
         numeric: "Measure",
       },
       searchKeyword: "",
-      debounceTime: null,
     };
   },
   computed: {
-    getRows : function () {
-      return this.tableData['body']
-    }
+    getRows: function () {
+      return this.tableData["body"];
+    },
   },
   watch: {
     table: function () {
       this.setupTable();
     },
-    searchKeyword: function () {
-      this.debounce(this.handleSearchKeyword, 500)
-    }
   },
   beforeMount() {
     this.setupTable();
@@ -185,45 +163,37 @@ export default {
      */
     sortTable: function (sortBy, headerIndex) {
       const updateTable = this.deepCopy(this.table.body).sort((row, __row) => {
-
         const firstCellValue = row["cells"][headerIndex]["value"];
         const secondCellValue = __row["cells"][headerIndex]["value"];
 
-        if(sortBy === 'ascending') return this.compareValues(firstCellValue, secondCellValue);
-        if(sortBy === 'descending') return this.compareValues(secondCellValue, firstCellValue);
+        if (sortBy === "ascending")
+          return this.compareValues(firstCellValue, secondCellValue);
+        if (sortBy === "descending")
+          return this.compareValues(secondCellValue, firstCellValue);
       });
 
       this.tableData["body"] = this.deepCopy(updateTable);
     },
 
     compareValues: function (firstValue, secondValue) {
-      if (
-        typeof firstValue === "number" &&
-        typeof secondValue === "number"
-      ) {
+      if (typeof firstValue === "number" && typeof secondValue === "number") {
         return firstValue - secondValue;
       } else {
         return firstValue.localeCompare(secondValue);
       }
     },
 
-    debounce: function (callback, delay) {
-      if (isNaN(delay) || !delay) {
-        callback();
-      } else {
-        clearTimeout(this.debounceTime);
-        this.debounceTime = setTimeout(callback, delay);
-      }
-    },
-
-    handleSearchKeyword: function () {
-      const keyword = this.searchKeyword && this.searchKeyword.toString().trim().toLowerCase();
-      if (keyword) {
-        this.tableData["body"] = this.deepCopy(this.table["body"].filter((row) =>
-          row["cells"].some((cell) =>
-            cell["value"].toString().toLowerCase().includes(keyword)
+    handleSearchKeyword: function ({ keyword }) {
+      const filteredKeyword =
+        keyword && keyword.toString().trim().toLowerCase();
+      if (filteredKeyword) {
+        this.tableData["body"] = this.deepCopy(
+          this.table["body"].filter((row) =>
+            row["cells"].some((cell) =>
+              cell["value"].toString().toLowerCase().includes(filteredKeyword)
+            )
           )
-        ));
+        );
       } else {
         this.tableData["body"] = this.deepCopy(this.table["body"]);
       }
@@ -234,6 +204,19 @@ export default {
      */
     downloadTable: function () {
       this.$emit("download");
+    },
+
+    /**
+     * This method handles events emitted from table toolbar
+     * @param {*} action - action to perform
+     * @param {*} payload - action payload
+     */
+    handleToolbarEvent: function (action, payload) {
+      const actionMapping = {
+        'download': this.downloadTable,
+        'search-in-table': this.handleSearchKeyword,
+      };
+      if (actionMapping[action]) actionMapping[action](payload);
     },
   },
 };
@@ -250,24 +233,6 @@ export default {
   border-collapse: collapse;
   position: relative;
   height: 100%;
-
-  .__table-toolbar {
-    display: flex;
-    justify-content: space-between;
-    padding-bottom: 8px;
-    align-items: center;
-
-    .__left-side-actions {
-      display: flex;
-      align-items: center;
-
-      .__search-box {
-        margin: 0 25px;
-        border-radius: 4px;
-        padding: 0 4px;
-      }
-    }
-  }
 
   table,
   th,
