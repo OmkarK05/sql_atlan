@@ -325,6 +325,7 @@ export default {
       }));
 
       body.forEach((row, index) => {
+        row['id'] = this.getUUID();
         headers.forEach((header) => {
           row["cells"].push(this.getTableCell(data[index], header));
         });
@@ -342,6 +343,7 @@ export default {
       return {
         name: header["name"],
         value: cellData[header["name"]],
+        id: this.getUUID(),
         style: {},
       };
     },

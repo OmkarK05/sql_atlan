@@ -74,16 +74,16 @@
           class="table-body"
         >
           <tr
-            v-for="(row, index) in getRows"
+            v-for="(row) in getRows"
             id="table-body-row"
-            :key="`table-body-row-${index}`"
+            :key="row['id']"
             class="table-body-row"
             onClick="() => handleRowClick(row)"
           >
             <td
               v-for="(cell, cellIndex) in row['cells']"
               :id="`table-body-cell-${cell['name']}-${cellIndex}`"
-              :key="`table-body-cell-${cell['value']}-${cellIndex}`"
+              :key="cell['id']"
               class="__cell bg-tertiary font-medium"
             >
               {{ cell["value"] }}
