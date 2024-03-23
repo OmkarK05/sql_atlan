@@ -57,6 +57,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: sql_atlan/app:latest
+          tags: omkar06/sql_atlan:latest
 
 
