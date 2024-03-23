@@ -57,6 +57,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: user/app:latest
+          tags: sql_atlan/app:latest
 
 
